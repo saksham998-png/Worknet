@@ -1,141 +1,173 @@
 {% extends 'layout.html' %}
 
+{% block title %}WorkNet | Dashboard{% endblock %}
+
 {% block content %}
-<div class="container-fluid px-4 py-4">
-    <!-- Header Section -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h3 mb-1">Dashboard</h1>
-            <p class="text-muted mb-0">Welcome back, {{ current_user.username }}</p>
+<section class="page-heading" id="dashboard-overview">
+    <div>
+        <span class="eyebrow">Workspace overview</span>
+        <h1>Dashboard</h1>
+        <p class="page-subtitle">A cleaner snapshot of your open work, team momentum, and the projects that need your attention.</p>
+    </div>
+    <div class="page-meta">
+        <div>Welcome back, {{ current_user.username }}</div>
+        <div>{{ now.strftime('%B %d, %Y') }}</div>
+    </div>
+</section>
+
+<section class="stats-grid">
+    <article class="stat-card brand interactive-surface">
+        <div class="stat-top">
+            <span class="stat-label">Total tasks</span>
+            <span class="stat-icon"><i class="fa-solid fa-list-check"></i></span>
         </div>
-        <div class="text-end">
-            <small class="text-muted">{{ now.strftime('%B %d, %Y') }}</small>
+        <div class="stat-value" data-countup="{{ total_tasks }}">0</div>
+        <p class="stat-note">Across all active projects</p>
+    </article>
+
+    <article class="stat-card success interactive-surface">
+        <div class="stat-top">
+            <span class="stat-label">Completed</span>
+            <span class="stat-icon"><i class="fa-solid fa-circle-check"></i></span>
         </div>
+        <div class="stat-value" data-countup="{{ completed_tasks }}">0</div>
+        <p class="stat-note">Work that has crossed the line</p>
+    </article>
+
+    <article class="stat-card warning interactive-surface">
+        <div class="stat-top">
+            <span class="stat-label">Pending</span>
+            <span class="stat-icon"><i class="fa-solid fa-clock"></i></span>
+        </div>
+        <div class="stat-value" data-countup="{{ pending_tasks }}">0</div>
+        <p class="stat-note">Tasks still in motion</p>
+    </article>
+
+    <article class="stat-card accent interactive-surface">
+        <div class="stat-top">
+            <span class="stat-label">Overdue</span>
+            <span class="stat-icon"><i class="fa-solid fa-bell"></i></span>
+        </div>
+        <div class="stat-value" data-countup="{{ overdue_tasks }}">0</div>
+        <p class="stat-note">Items that need a quick look</p>
+    </article>
+</section>
+
+<section class="dashboard-layout">
+    <div class="section-stack">
+        <article class="section-card" id="create-project-panel">
+            <div class="section-card-header">
+                <div class="section-title-row">
+                    <h2>Recent tasks</h2>
+                    <p class="text-muted">The newest work across your projects.</p>
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                {% if recent_tasks %}
+                <div class="filter-toolbar px-3 py-3" data-filter-group data-filter-target="#dashboard-task-table-body" data-empty-target="#dashboard-task-empty">
+                    <div class="filter-chip-group">
+                        <button type="button" class="filter-chip is-active" data-filter="all">All</button>
+                        <button type="button" class="filter-chip" data-filter="in progress">In Progress</button>
+                        <button type="button" class="filter-chip" data-filter="done">Done</button>
+                        <button type="button" class="filter-chip" data-filter="overdue">Overdue</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Task</th>
+                                <th>Project</th>
+                                <th>Status</th>
+                                <th>Due date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboard-task-table-body">
+                            {% for task in recent_tasks %}
+                            <tr data-filterable data-status="{{ task.status|lower }}" data-overdue="{{ 'true' if task.is_overdue else 'false' }}">
+                                <td>
+                                    <div class="task-title">{{ task.title }}</div>
+                                    <div class="task-subtext">{{ task.assignee.username if task.assignee else 'Unassigned' }}</div>
+                                </td>
+                                <td>{{ task.project.name }}</td>
+                                <td>
+                                    <span class="badge-status {{ task.status|lower|replace(' ', '-') }}">{{ task.status }}</span>
+                                    {% if task.is_overdue %}
+                                    <span class="badge-status overdue ms-2">Overdue</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ task.due_date.strftime('%b %d, %Y') if task.due_date else 'No due date' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div id="dashboard-task-empty" class="empty-inline-state d-none">
+                    <p>No tasks match this filter right now.</p>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <p>No recent tasks yet. Create a project and the workspace will start filling in.</p>
+                </div>
+                {% endif %}
+            </div>
+        </article>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="row g-3 mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="dashboard-card h-100">
-                <h5>Total Tasks</h5>
-                <p>{{ total_tasks }}</p>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="dashboard-card h-100">
-                <h5>Completed</h5>
-                <p class="text-success">{{ completed_tasks }}</p>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="dashboard-card h-100">
-                <h5>Pending</h5>
-                <p>{{ pending_tasks }}</p>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="dashboard-card h-100">
-                <h5>Overdue</h5>
-                <p class="text-danger">{{ overdue_tasks }}</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="row g-4">
-        <!-- Recent Tasks -->
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header border-0 bg-transparent">
-                    <h5 class="mb-0">Recent Tasks</h5>
+    <div class="section-stack">
+        <article class="section-card" id="recent-tasks">
+            <div class="section-card-header">
+                <div class="section-title-row">
+                    <h3>Create project</h3>
+                    <p class="text-muted">Start a fresh workspace for your team.</p>
                 </div>
-                <div class="card-body p-0">
-                    {% if recent_tasks %}
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="border-0 fw-normal">Task</th>
-                                    <th class="border-0 fw-normal">Project</th>
-                                    <th class="border-0 fw-normal">Status</th>
-                                    <th class="border-0 fw-normal">Due Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for task in recent_tasks %}
-                                <tr>
-                                    <td class="fw-medium">{{ task.title }}</td>
-                                    <td>{{ task.project.name }}</td>
-                                    <td>
-                                        <span class="badge-status {{ task.status|lower|replace(' ', '-') }}">{{ task.status }}</span>
-                                        {% if task.is_overdue %}
-                                        <span class="badge-status overdue ms-2">Overdue</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ task.due_date or 'No due date' }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{{ url_for('projects.create_project') }}">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Project name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
                     </div>
-                    {% else %}
-                    <div class="p-4 text-center text-muted">
-                        <p class="mb-0">No recent tasks. Create a new project to get started.</p>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" placeholder="What is this project about?"></textarea>
                     </div>
-                    {% endif %}
-                </div>
+                    <button type="submit" class="btn btn-primary w-100">Create Project</button>
+                </form>
             </div>
-        </div>
+        </article>
 
-        <!-- Sidebar -->
-        <div class="col-lg-4">
-            <!-- Create Project -->
-            <div class="card mb-4">
-                <div class="card-header border-0 bg-transparent">
-                    <h5 class="mb-0">Create Project</h5>
-                </div>
-                <div class="card-body">
-                    <form method="post" action="{{ url_for('projects.create_project') }}">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Project Name</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control" id="description" name="description" rows="3" placeholder="Optional description"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Create Project</button>
-                    </form>
+        <article class="section-card">
+            <div class="section-card-header">
+                <div class="section-title-row">
+                    <h3>Your projects</h3>
+                    <p class="text-muted">Open a project and manage tasks in detail.</p>
                 </div>
             </div>
 
-            <!-- Your Projects -->
-            <div class="card">
-                <div class="card-header border-0 bg-transparent">
-                    <h5 class="mb-0">Your Projects</h5>
-                </div>
-                <div class="card-body p-0">
-                    {% if projects %}
-                    <div class="list-group list-group-flush">
-                        {% for project in projects %}
-                        <a href="{{ url_for('projects.project_detail', project_id=project.id) }}" class="list-group-item list-group-item-action border-0">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <div class="fw-medium">{{ project.name }}</div>
-                                    <small class="text-muted">{{ project.description or 'No description' }}</small>
-                                </div>
-                                <small class="text-muted">{{ project.tasks|length }} tasks</small>
+            <div class="card-body p-0">
+                {% if projects %}
+                <div class="list-group list-group-flush">
+                    {% for project in projects %}
+                    <a href="{{ url_for('projects.project_detail', project_id=project.id) }}" class="list-group-item">
+                        <div class="project-list-item">
+                            <div>
+                                <div class="project-list-name">{{ project.name }}</div>
+                                <div class="project-list-meta">{{ project.description or 'No description yet' }}</div>
                             </div>
-                        </a>
-                        {% endfor %}
-                    </div>
-                    {% else %}
-                    <div class="p-4 text-center text-muted">
-                        <p class="mb-0">No projects yet. Create your first project above.</p>
-                    </div>
-                    {% endif %}
+                            <div class="project-list-count">{{ project.tasks|length }} tasks</div>
+                        </div>
+                    </a>
+                    {% endfor %}
                 </div>
+                {% else %}
+                <div class="empty-state">
+                    <p>No projects yet. Your first one can be created from the panel above.</p>
+                </div>
+                {% endif %}
             </div>
-        </div>
+        </article>
     </div>
-</div>
+</section>
 {% endblock %}
