@@ -55,7 +55,88 @@
 
 <section class="dashboard-layout">
     <div class="section-stack">
-        <article class="section-card" id="create-project-panel">
+        <article class="section-card">
+            <div class="section-card-header">
+                <div class="section-title-row">
+                    <h2>Workspace focus</h2>
+                    <p class="text-muted">A quick read on what needs attention first.</p>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="feature-grid dashboard-feature-grid">
+                    <div class="feature-card interactive-surface compact-feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-user-check"></i></div>
+                        <h3>Assigned to you</h3>
+                        <p>{{ assigned_tasks|length }} active task{{ '' if assigned_tasks|length == 1 else 's' }} currently need your attention.</p>
+                        {% if assigned_tasks %}
+                        <div class="mini-list mt-3">
+                            {% for task in assigned_tasks %}
+                            <div class="mini-list-item">
+                                <strong>{{ task.title }}</strong>
+                                <span>{{ task.project.name }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="feature-card interactive-surface compact-feature-card">
+                        <div class="feature-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                        <h3>Due soon</h3>
+                        <p>{{ due_soon_tasks|length }} task{{ '' if due_soon_tasks|length == 1 else 's' }} are coming up in the next few days.</p>
+                        {% if due_soon_tasks %}
+                        <div class="mini-list mt-3">
+                            {% for task in due_soon_tasks %}
+                            <div class="mini-list-item">
+                                <strong>{{ task.title }}</strong>
+                                <span>{{ task.due_date.strftime('%b %d') }} in {{ task.project.name }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <article class="section-card">
+            <div class="section-card-header">
+                <div class="section-title-row">
+                    <h2>Project pulse</h2>
+                    <p class="text-muted">Progress snapshots across your busiest workspaces.</p>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if project_snapshots %}
+                <div class="pulse-list">
+                    {% for project in project_snapshots %}
+                    <div class="pulse-card interactive-surface">
+                        <div class="pulse-card-top">
+                            <div>
+                                <strong>{{ project.name }}</strong>
+                                <div class="text-muted small">{{ project.tasks|length }} tasks • {{ project.members|length }} members</div>
+                            </div>
+                            <a href="{{ url_for('projects.project_detail', project_id=project.id) }}" class="pulse-link">Open</a>
+                        </div>
+                        <div class="pulse-progress-meta">
+                            <span>{{ project.task_stats['completion_rate']|round|int }}% complete</span>
+                            <span>{{ project.task_stats['overdue'] }} overdue</span>
+                        </div>
+                        <div class="progress-track mt-2">
+                            <div class="progress-fill" style="width: {{ project.task_stats['completion_rate'] }}%;"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <p>Create a couple of projects and this view will start surfacing progress trends.</p>
+                </div>
+                {% endif %}
+            </div>
+        </article>
+
+        <article class="section-card" id="recent-tasks">
             <div class="section-card-header">
                 <div class="section-title-row">
                     <h2>Recent tasks</h2>
@@ -116,7 +197,7 @@
     </div>
 
     <div class="section-stack">
-        <article class="section-card" id="recent-tasks">
+        <article class="section-card" id="create-project-panel">
             <div class="section-card-header">
                 <div class="section-title-row">
                     <h3>Create project</h3>
@@ -137,6 +218,37 @@
                 </form>
             </div>
         </article>
+
+        {% if current_user.role == 'Admin' %}
+        <article class="section-card" id="admin-panel">
+            <div class="section-card-header">
+                <div class="section-title-row">
+                    <h3>Admin section</h3>
+                    <p class="text-muted">Admin controls, team settings, and workspace management.</p>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="mb-3">As an admin, you can manage workspace settings, user roles, and team permissions from this panel.</p>
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <div class="admin-card p-3 rounded-3 bg-light border">
+                            <h6>Team settings</h6>
+                            <p class="small text-muted">Update project roles and workspace preferences.</p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="admin-card p-3 rounded-3 bg-light border">
+                            <h6>User management</h6>
+                            <p class="small text-muted">Review team members, assign roles, and control access.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-primary">Go to Admin Dashboard</a>
+                </div>
+            </div>
+        </article>
+        {% endif %}
 
         <article class="section-card">
             <div class="section-card-header">

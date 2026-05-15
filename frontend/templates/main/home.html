@@ -4,131 +4,20 @@
 {% block body_class %}home-page{% endblock %}
 
 {% block content %}
-<section class="hero-grid mb-4">
-    <div class="hero-panel hero-panel--primary">
-        <div class="hero-copy">
-            <span class="eyebrow">Focused team operations</span>
-            <h1>Keep projects moving without the visual noise.</h1>
-            <p>WorkNet gives your team a cleaner workspace for projects, deadlines, ownership, and progress so the important work stands out fast.</p>
-        </div>
-
-        <div class="hero-actions">
-            <a class="btn btn-primary btn-lg" href="{{ url_for('auth.signup') }}">Create Workspace</a>
-            <a class="btn btn-outline-primary btn-lg" href="{{ url_for('auth.login') }}">Sign In</a>
-        </div>
-
-        <div class="hero-metrics">
-            <div class="hero-metric">
-                <strong>Projects</strong>
-                <span>Organize work into clear spaces</span>
-            </div>
-            <div class="hero-metric">
-                <strong>Tasks</strong>
-                <span>Track status, owners, and deadlines</span>
-            </div>
-            <div class="hero-metric">
-                <strong>Activity</strong>
-                <span>See what changed without digging</span>
-            </div>
-        </div>
+<section class="hero-panel hero-panel--primary hero-panel--simple">
+    <div class="hero-copy">
+        <span class="eyebrow">Focused team operations</span>
+        <h1>Manage projects, tasks, and progress from a single workspace.</h1>
+        <p>WorkNet centralizes planning, execution, and reporting so teams stay aligned and productive.</p>
     </div>
 
-    <div class="preview-card">
-        <div class="preview-header">
-            <div class="preview-header-top">
-                <div>
-                    <div class="preview-tag">Live Overview</div>
-                    <h3>Product launch workspace</h3>
-                </div>
-                <div class="preview-dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </div>
-
-            <div class="preview-progress">
-                <div class="d-flex justify-content-between text-muted small mb-2">
-                    <span>Execution progress</span>
-                    <span>74%</span>
-                </div>
-                <div class="progress-track">
-                    <div class="progress-fill" style="width: 74%;"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="preview-chart">
-            <div class="preview-chart-bar" style="height: 52%;"></div>
-            <div class="preview-chart-bar" style="height: 68%;"></div>
-            <div class="preview-chart-bar" style="height: 42%;"></div>
-            <div class="preview-chart-bar" style="height: 84%;"></div>
-            <div class="preview-chart-bar" style="height: 62%;"></div>
-        </div>
-
-        <div class="preview-list">
-            <div class="preview-row">
-                <div>
-                    <div class="preview-row-title">Homepage refresh</div>
-                    <div class="preview-row-subtitle">Assigned to design and frontend</div>
-                </div>
-                <span class="badge-status done">Done</span>
-            </div>
-            <div class="preview-row">
-                <div>
-                    <div class="preview-row-title">Investor update</div>
-                    <div class="preview-row-subtitle">Waiting on final metrics</div>
-                </div>
-                <span class="badge-status in-progress">In Progress</span>
-            </div>
-            <div class="preview-row">
-                <div>
-                    <div class="preview-row-title">QA handoff</div>
-                    <div class="preview-row-subtitle">Scheduled for tomorrow</div>
-                </div>
-                <span class="badge-status todo">To Do</span>
-            </div>
-        </div>
+    <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="{{ url_for('auth.signup') }}">Create Workspace</a>
+        <a class="btn btn-outline-primary btn-lg" href="{{ url_for('auth.login') }}">Sign In</a>
     </div>
-</section>
 
-<section class="section-card mb-4">
-    <div class="card-body">
-        <div class="page-heading">
-            <div>
-                <span class="eyebrow">Why teams like it</span>
-                <h2>Everything is easier to scan, assign, and ship.</h2>
-                <p class="page-subtitle">The interface stays polished and lightweight while still giving your team the structure it needs every day.</p>
-            </div>
-        </div>
-
-        <div class="feature-grid">
-            <article class="feature-card">
-                <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                <h3>Secure access</h3>
-                <p>Role-aware authentication keeps the workspace safe while still making onboarding straightforward.</p>
-            </article>
-
-            <article class="feature-card">
-                <div class="feature-icon"><i class="fa-solid fa-layer-group"></i></div>
-                <h3>Project structure</h3>
-                <p>Create dedicated workspaces, invite teammates, and keep responsibilities clear across every project.</p>
-            </article>
-
-            <article class="feature-card">
-                <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
-                <h3>Visible progress</h3>
-                <p>Track task status, overdue work, and recent activity in one place without digging through clutter.</p>
-            </article>
-        </div>
-
-        <div class="cta-banner">
-            <div>
-                <h3>Ready for a calmer workflow?</h3>
-                <p>Set up your team, start a project, and keep momentum visible from day one.</p>
-            </div>
-            <a class="btn btn-primary" href="{{ url_for('auth.signup') }}">Start with WorkNet</a>
-        </div>
+    <div class="hero-note text-muted mt-4">
+        Trusted by teams that need a clean, consistent workspace without extra noise.
     </div>
 </section>
 {% endblock %}

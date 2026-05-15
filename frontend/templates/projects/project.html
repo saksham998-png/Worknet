@@ -22,6 +22,14 @@
                 {{ project.member_role(current_user) or 'Member' }}
             </span>
         </div>
+
+        {% if can_manage %}
+        <div class="project-action-group">
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addMemberModal">
+                Add team member
+            </button>
+        </div>
+        {% endif %}
     </div>
 
     <div class="project-stat-grid">
@@ -134,16 +142,133 @@
                                 <td>{{ task.due_date.strftime('%b %d, %Y') if task.due_date else 'No due date' }}</td>
                                 <td>
                                     {% if task.assignee == current_user or can_manage %}
-                                    <form method="post" action="{{ url_for('tasks.update_task_status', task_id=task.id) }}">
-                                        <select name="status" class="form-select compact-select" onchange="this.form.submit()">
-                                            <option value="To Do" {% if task.status == 'To Do' %}selected{% endif %}>To Do</option>
-                                            <option value="In Progress" {% if task.status == 'In Progress' %}selected{% endif %}>In Progress</option>
-                                            <option value="Done" {% if task.status == 'Done' %}selected{% endif %}>Done</option>
-                                        </select>
-                                    </form>
+                                    <div class="d-flex flex-column gap-2">
+                                        <form method="post" action="{{ url_for('tasks.update_task_status', task_id=task.id) }}">
+                                            <select name="status" class="form-select compact-select" onchange="this.form.submit()">
+                                                <option value="To Do" {% if task.status == 'To Do' %}selected{% endif %}>To Do</option>
+                                                <option value="In Progress" {% if task.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                                <option value="Done" {% if task.status == 'Done' %}selected{% endif %}>Done</option>
+                                            </select>
+                                        </form>
+                                        <button class="btn btn-sm btn-outline-primary detail-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#taskDetail{{ task.id }}" aria-expanded="false" aria-controls="taskDetail{{ task.id }}">
+                                            Details
+                                        </button>
+                                    </div>
                                     {% else %}
-                                    <span class="text-muted">View only</span>
+                                    <div class="d-flex flex-column gap-2 align-items-start">
+                                        <span class="text-muted">View only</span>
+                                        <button class="btn btn-sm btn-outline-primary detail-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#taskDetail{{ task.id }}" aria-expanded="false" aria-controls="taskDetail{{ task.id }}">
+                                            Details
+                                        </button>
+                                    </div>
                                     {% endif %}
+                                </td>
+                            </tr>
+                            <tr class="task-detail-row">
+                                <td colspan="6" class="p-0 border-0">
+                                    <div class="collapse" id="taskDetail{{ task.id }}">
+                                        <div class="task-detail-panel">
+                                            <div class="task-detail-grid">
+                                                <section class="task-detail-card">
+                                                    <div class="task-detail-header">
+                                                        <h4>Task notes</h4>
+                                                        <span class="task-detail-meta">Created by {{ task.creator.username }}</span>
+                                                    </div>
+                                                    <div class="task-summary-grid">
+                                                        <div class="task-summary-item">
+                                                            <span class="task-summary-label">Assignee</span>
+                                                            <strong>{{ task.assignee.username if task.assignee else 'Unassigned' }}</strong>
+                                                        </div>
+                                                        <div class="task-summary-item">
+                                                            <span class="task-summary-label">Priority</span>
+                                                            <strong>{{ task.priority }}</strong>
+                                                        </div>
+                                                        <div class="task-summary-item">
+                                                            <span class="task-summary-label">Status</span>
+                                                            <strong>{{ task.status }}</strong>
+                                                        </div>
+                                                        <div class="task-summary-item">
+                                                            <span class="task-summary-label">Due date</span>
+                                                            <strong>{{ task.due_date.strftime('%b %d, %Y') if task.due_date else 'No due date' }}</strong>
+                                                        </div>
+                                                    </div>
+                                                    <div class="task-notes-body">
+                                                        <p>{{ task.description or 'No extra notes yet. Add a description to give the team more context.' }}</p>
+                                                    </div>
+                                                </section>
+
+                                                <section class="task-detail-card">
+                                                    <div class="task-detail-header">
+                                                        <h4>Comments</h4>
+                                                        <span class="task-detail-meta">{{ task.comments|length }} total</span>
+                                                    </div>
+                                                    {% if task.comments %}
+                                                    <div class="task-comment-list">
+                                                        {% for comment in task.comments|sort(attribute='created_at', reverse=True) %}
+                                                        <div class="task-comment-item">
+                                                            <div class="task-comment-top">
+                                                                <div>
+                                                                    <strong>{{ comment.author.username }}</strong>
+                                                                    <span>{{ comment.created_at.strftime('%b %d, %Y') }}</span>
+                                                                </div>
+                                                                {% if current_user == comment.author or can_manage %}
+                                                                <form method="post" action="{{ url_for('comments.delete_comment', comment_id=comment.id) }}">
+                                                                    <button type="submit" class="comment-action-link">Delete</button>
+                                                                </form>
+                                                                {% endif %}
+                                                            </div>
+                                                            <p>{{ comment.content }}</p>
+                                                        </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                    {% else %}
+                                                    <div class="task-empty-card">No comments yet.</div>
+                                                    {% endif %}
+
+                                                    <form method="post" action="{{ url_for('comments.add_comment', task_id=task.id) }}" class="task-inline-form mt-3">
+                                                        <label class="form-label" for="comment-{{ task.id }}">Add comment</label>
+                                                        <textarea class="form-control task-inline-textarea" id="comment-{{ task.id }}" name="content" placeholder="Share an update or leave context"></textarea>
+                                                        <button type="submit" class="btn btn-primary btn-sm mt-3">Post Comment</button>
+                                                    </form>
+                                                </section>
+
+                                                <section class="task-detail-card">
+                                                    <div class="task-detail-header">
+                                                        <h4>Attachments</h4>
+                                                        <span class="task-detail-meta">{{ task.attachments|length }} file{{ '' if task.attachments|length == 1 else 's' }}</span>
+                                                    </div>
+                                                    {% if task.attachments %}
+                                                    <div class="task-file-list">
+                                                        {% for attachment in task.attachments|sort(attribute='uploaded_at', reverse=True) %}
+                                                        <div class="task-file-item">
+                                                            <div>
+                                                                <strong>{{ attachment.original_filename }}</strong>
+                                                                <span>{{ attachment.uploader.username }} • {{ attachment.uploaded_at.strftime('%b %d, %Y') }}</span>
+                                                            </div>
+                                                            <div class="task-file-actions">
+                                                                <a href="{{ url_for('attachments.download_attachment', attachment_id=attachment.id) }}" class="comment-action-link">Download</a>
+                                                                {% if current_user == attachment.uploader or can_manage %}
+                                                                <form method="post" action="{{ url_for('attachments.delete_attachment', attachment_id=attachment.id) }}">
+                                                                    <button type="submit" class="comment-action-link">Delete</button>
+                                                                </form>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                    {% else %}
+                                                    <div class="task-empty-card">No files uploaded yet.</div>
+                                                    {% endif %}
+
+                                                    <form method="post" action="{{ url_for('attachments.upload_attachment', task_id=task.id) }}" enctype="multipart/form-data" class="task-inline-form mt-3">
+                                                        <label class="form-label" for="file-{{ task.id }}">Upload file</label>
+                                                        <input type="file" class="form-control" id="file-{{ task.id }}" name="file" required>
+                                                        <button type="submit" class="btn btn-primary btn-sm mt-3">Upload Attachment</button>
+                                                    </form>
+                                                </section>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -178,6 +303,8 @@
                 <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addMemberModal">
                     Add Member
                 </button>
+                {% else %}
+                <div class="text-muted small">Only project admins can invite new members.</div>
                 {% endif %}
             </div>
 

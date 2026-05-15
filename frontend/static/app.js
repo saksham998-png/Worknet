@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    initClock();
     initCountups();
     initSidebarCollapsibles();
     initDashboardFilters();
@@ -6,7 +7,28 @@ document.addEventListener('DOMContentLoaded', () => {
     initInteractiveRows();
     initFloatingActionButton();
     initSurfaceTilt();
+    ensureSidebarFallback();
 });
+
+function initClock() {
+    const clockElement = document.getElementById('live-clock');
+    if (!clockElement) return;
+
+    const updateClock = () => {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+    };
+
+    updateClock();
+    const delay = 1000 - new Date().getMilliseconds();
+    setTimeout(() => {
+        updateClock();
+        setInterval(updateClock, 1000);
+    }, delay);
+}
 
 function initCountups() {
     const counters = document.querySelectorAll('[data-countup]');
@@ -49,6 +71,37 @@ function initCountups() {
     }, { threshold: 0.35 });
 
     counters.forEach((counter) => observer.observe(counter));
+}
+
+function ensureSidebarFallback() {
+    // If the server-side template didn't render the sidebar, inject a minimal fallback so users always see navigation.
+    if (document.querySelector('.workspace-sidebar')) return;
+
+    const signedInText = Array.from(document.querySelectorAll('.navbar-nav li')).find(li => li.textContent && li.textContent.includes('Signed in'));
+    const isSignedIn = Boolean(signedInText);
+    if (!isSignedIn) return; // only inject for signed-in users
+
+    const sidebar = document.createElement('aside');
+    sidebar.className = 'workspace-sidebar';
+    sidebar.innerHTML = `
+        <div class="sidebar-panel">
+            <div class="sidebar-user">
+                <span class="sidebar-user-kicker">Signed in</span>
+                <strong>${document.querySelector('.user-pill') ? document.querySelector('.user-pill').textContent.replace('Signed in as', '').trim() : 'You'}</strong>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-section-title">Navigation</div>
+                <a href="/dashboard" class="sidebar-link"><i class="fa-solid fa-house"></i><span>Dashboard</span></a>
+                <a href="/projects" class="sidebar-link"><i class="fa-solid fa-folder-open"></i><span>Projects</span></a>
+                <a href="/tasks" class="sidebar-link"><i class="fa-solid fa-list-check"></i><span>Team Tasks</span></a>
+                <a href="/admin" class="sidebar-link"><i class="fa-solid fa-user-shield"></i><span>Admin</span></a>
+            </div>
+        </div>
+    `;
+
+    // Insert before main content if possible
+    const appShell = document.querySelector('.app-shell') || document.body;
+    appShell.insertBefore(sidebar, appShell.firstChild);
 }
 
 function initSidebarCollapsibles() {

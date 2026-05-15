@@ -1,0 +1,128 @@
+{% extends 'layout.html' %}
+
+{% block title %}WorkNet | Admin Dashboard{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <div>
+        <span class="eyebrow">Admin workspace</span>
+        <h1>Admin panel</h1>
+        <p class="page-subtitle">Manage users, projects, and team permissions for your workspace.</p>
+    </div>
+</section>
+
+<section class="section-stack">
+    <article class="section-card">
+        <div class="section-card-header">
+            <div class="section-title-row">
+                <h2>Team members</h2>
+                <p class="text-muted">All registered workspace users and their current roles.</p>
+            </div>
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            <form method="post" action="{{ url_for('admin.update_user_role', user_id=user.id) }}" class="d-flex gap-2 align-items-center">
+                                <select name="role" class="form-select form-select-sm">
+                                    <option value="Member" {% if user.role == 'Member' %}selected{% endif %}>Member</option>
+                                    <option value="Admin" {% if user.role == 'Admin' %}selected{% endif %}>Admin</option>
+                                </select>
+                                {% if user.id != current_user.id %}
+                                <button type="submit" class="btn btn-sm btn-outline-primary">Save</button>
+                                {% else %}
+                                <button type="button" class="btn btn-sm btn-secondary" disabled>Current</button>
+                                {% endif %}
+                            </form>
+                        </td>
+                        <td>{{ user.created_at.strftime('%b %d, %Y') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="section-card">
+        <div class="section-card-header">
+            <div class="section-title-row">
+                <h2>Workspace projects</h2>
+                <p class="text-muted">Review active projects and project owners.</p>
+            </div>
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Owner</th>
+                        <th>Status</th>
+                        <th>Tasks</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                    <tr>
+                        <td>{{ project.name }}</td>
+                        <td>{{ project.owner.username }}</td>
+                        <td>{{ project.status }}</td>
+                        <td>{{ project.task_stats['total'] }}</td>
+                        <td>
+                            <form method="post" action="{{ url_for('admin.update_project_status', project_id=project.id) }}" class="d-flex gap-2 align-items-center">
+                                <select name="status" class="form-select form-select-sm">
+                                    <option value="Active" {% if project.status == 'Active' %}selected{% endif %}>Active</option>
+                                    <option value="Paused" {% if project.status == 'Paused' %}selected{% endif %}>Paused</option>
+                                    <option value="Archived" {% if project.status == 'Archived' %}selected{% endif %}>Archived</option>
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-outline-primary">Save</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="section-card">
+        <div class="section-card-header">
+            <div class="section-title-row">
+                <h2>Recent admin activity</h2>
+                <p class="text-muted">Latest workspace events and updates.</p>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if recent_activities %}
+            <div class="activity-list">
+                {% for activity in recent_activities %}
+                <div class="activity-item">
+                    <div class="activity-item-top">
+                        <strong>{{ activity.user.username }}</strong>
+                        <span>{{ activity.created_at.strftime('%b %d, %Y %H:%M') }}</span>
+                    </div>
+                    <p class="text-muted">{{ activity.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <p>No recent activity yet.</p>
+            </div>
+            {% endif %}
+        </div>
+    </article>
+</section>
+{% endblock %}

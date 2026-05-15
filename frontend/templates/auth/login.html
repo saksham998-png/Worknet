@@ -6,44 +6,11 @@
 
 {% block content %}
 <section class="auth-page">
-    <div class="auth-shell">
-        <div class="auth-aside">
-            <div class="auth-mark">
-                <span class="auth-mark-badge">W</span>
-                WorkNet
-            </div>
-            <h1>Sign in to a calmer workspace.</h1>
-            <p>Pick up where your team left off, check project movement, and keep work progressing without sifting through a crowded interface.</p>
-
-            <div class="auth-points">
-                <div class="auth-point">
-                    <span class="auth-point-icon"><i class="fa-solid fa-layer-group"></i></span>
-                    <div>
-                        <strong>Project clarity</strong>
-                        <p>See your spaces, ownership, and task flow in one place.</p>
-                    </div>
-                </div>
-                <div class="auth-point">
-                    <span class="auth-point-icon"><i class="fa-solid fa-clock"></i></span>
-                    <div>
-                        <strong>Faster check-ins</strong>
-                        <p>Spot what is overdue, moving, or blocked without opening every task.</p>
-                    </div>
-                </div>
-                <div class="auth-point">
-                    <span class="auth-point-icon"><i class="fa-solid fa-user-group"></i></span>
-                    <div>
-                        <strong>Better team coordination</strong>
-                        <p>Stay aligned across members, updates, and deadlines.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="auth-card">
+    <div class="auth-shell auth-shell--simple">
+        <div class="auth-card auth-card--centered">
             <span class="eyebrow">Welcome back</span>
             <h2>Sign in</h2>
-            <p>Use your email and password to enter your workspace.</p>
+            <p>Enter your email and password to access your workspace.</p>
 
             <form method="post" action="{{ url_for('auth.login') }}" class="auth-form">
                 <div class="mb-3">
@@ -56,12 +23,12 @@
                     <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Sign In to WorkNet</button>
+                <button type="submit" class="btn btn-primary w-100">Sign In</button>
             </form>
 
-            <div class="auth-divider">
-                <p class="mb-3">New here?</p>
-                <a href="{{ url_for('auth.signup') }}" class="btn btn-outline-primary">Create Account</a>
+            <div class="auth-divider text-center mt-4">
+                <span>New here?</span>
+                <a href="{{ url_for('auth.signup') }}" class="btn btn-outline-primary btn-sm ms-3">Create account</a>
             </div>
         </div>
     </div>

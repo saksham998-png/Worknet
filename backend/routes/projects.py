@@ -1,7 +1,7 @@
 from flask import Blueprint, request, redirect, url_for, flash, abort, render_template
 from flask_login import login_required, current_user
 from sqlalchemy.orm import joinedload
-from models import db, Project, Membership, User, Task
+from models import db, Project, Membership, User, Task, Comment, Attachment
 
 projects_bp = Blueprint('projects', __name__)
 
@@ -29,9 +29,11 @@ def create_project():
 @login_required
 def project_detail(project_id):
     project = Project.query.options(
-        joinedload(Project.tasks).joinedload(Task.comments),
-        joinedload(Project.tasks).joinedload(Task.attachments),
-        joinedload(Project.memberships)
+        joinedload(Project.tasks).joinedload(Task.comments).joinedload(Comment.author),
+        joinedload(Project.tasks).joinedload(Task.attachments).joinedload(Attachment.uploader),
+        joinedload(Project.tasks).joinedload(Task.assignee),
+        joinedload(Project.tasks).joinedload(Task.creator),
+        joinedload(Project.memberships).joinedload(Membership.user),
     ).get_or_404(project_id)
 
     if current_user not in project.members:
