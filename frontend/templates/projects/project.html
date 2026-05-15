@@ -1,0 +1,329 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <!-- Project Header -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="h3 mb-2">{{ project.name }}</h1>
+                    <p class="text-muted mb-2">{{ project.description or 'No description provided' }}</p>
+                    <small class="text-muted">Created by {{ project.owner.username }} • {{ project.created_at.strftime('%B %d, %Y') }}</small>
+                </div>
+                <div class="col-md-4 text-end">
+                    <span class="badge badge-status {{ 'admin' if project.can_manage(current_user) else 'member' }}">
+                        {{ project.member_role(current_user) or 'Member' }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Tasks Section -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header border-0 bg-transparent d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Tasks</h5>
+                    {% if can_manage %}
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#createTaskModal">
+                        Add Task
+                    </button>
+                    {% endif %}
+                </div>
+                <div class="card-body p-0">
+                    {% if project.tasks %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="border-0 fw-normal">Task</th>
+                                    <th class="border-0 fw-normal">Assignee</th>
+                                    <th class="border-0 fw-normal">Priority</th>
+                                    <th class="border-0 fw-normal">Status</th>
+                                    <th class="border-0 fw-normal">Due Date</th>
+                                    <th class="border-0 fw-normal">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for task in project.tasks %}
+                                <tr>
+                                    <td>
+                                        <div class="fw-medium">{{ task.title }}</div>
+                                        {% if task.description %}
+                                        <small class="text-muted">{{ task.description[:50] }}{% if task.description|length > 50 %}...{% endif %}</small>
+                                        {% endif %}
+                                        {% if task.comments or task.attachments %}
+                                        <div class="mt-1">
+                                            {% if task.comments %}
+                                            <small class="text-muted me-2"><i class="fas fa-comment"></i> {{ task.comments|length }}</small>
+                                            {% endif %}
+                                            {% if task.attachments %}
+                                            <small class="text-muted"><i class="fas fa-paperclip"></i> {{ task.attachments|length }}</small>
+                                            {% endif %}
+                                        </div>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ task.assignee.username if task.assignee else 'Unassigned' }}</td>
+                                    <td>
+                                        <span class="badge" style="background-color: {{ task.priority_color }}; color: white;">
+                                            {{ task.priority }}
+                                        </span>
+                                        {% if can_manage %}
+                                        <form method="post" action="{{ url_for('tasks.update_task_priority', task_id=task.id) }}" class="d-inline ms-1">
+                                            <select name="priority" class="form-select form-select-sm" onchange="this.form.submit()" style="width: auto; font-size: 0.75rem;">
+                                                <option value="Low" {% if task.priority == 'Low' %}selected{% endif %}>Low</option>
+                                                <option value="Medium" {% if task.priority == 'Medium' %}selected{% endif %}>Medium</option>
+                                                <option value="High" {% if task.priority == 'High' %}selected{% endif %}>High</option>
+                                                <option value="Urgent" {% if task.priority == 'Urgent' %}selected{% endif %}>Urgent</option>
+                                            </select>
+                                        </form>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge-status {{ task.status|lower|replace(' ', '-') }}">{{ task.status }}</span>
+                                        {% if task.is_overdue %}
+                                        <span class="badge-status overdue ms-2">Overdue</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ task.due_date.strftime('%b %d') if task.due_date else 'No due date' }}</td>
+                                    <td>
+                                        {% if task.assignee == current_user or can_manage %}
+                                        <form method="post" action="{{ url_for('tasks.update_task_status', task_id=task.id) }}" class="d-inline">
+                                            <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                                <option value="To Do" {% if task.status == 'To Do' %}selected{% endif %}>To Do</option>
+                                                <option value="In Progress" {% if task.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                                <option value="Done" {% if task.status == 'Done' %}selected{% endif %}>Done</option>
+                                            </select>
+                                        </form>
+                                        {% else %}
+                                        <span class="text-muted">No actions</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="p-5 text-center text-muted">
+                        <p class="mb-3">No tasks in this project yet.</p>
+                        {% if can_manage %}
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTaskModal">
+                            Create First Task
+                        </button>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Team Members -->
+            <div class="card mb-4">
+                <div class="card-header border-0 bg-transparent d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Team Members</h5>
+                    {% if can_manage %}
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addMemberModal">
+                        Add Member
+                    </button>
+                    {% endif %}
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for member in project.members %}
+                        <div class="list-group-item border-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-medium">{{ member.username }}</div>
+                                    <small class="text-muted">{{ member.email }}</small>
+                                </div>
+                                <span class="badge badge-status {{ project.member_role(member)|lower }}">{{ project.member_role(member) }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Stats -->
+            <div class="card">
+                <div class="card-header border-0 bg-transparent">
+                    <h5 class="mb-0">Project Stats</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="text-center">
+                                <div class="h4 mb-1">{{ project.tasks|length }}</div>
+                                <small class="text-muted">Total Tasks</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <div class="h4 mb-1 text-success">{{ project.tasks|selectattr('status', 'equalto', 'Done')|list|length }}</div>
+                                <small class="text-muted">Completed</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <div class="h4 mb-1">{{ project.tasks|selectattr('status', 'equalto', 'In Progress')|list|length }}</div>
+                                <small class="text-muted">In Progress</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <div class="h4 mb-1 text-danger">{{ project.tasks|selectattr('is_overdue')|list|length }}</div>
+                                <small class="text-muted">Overdue</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card">
+                <div class="card-header border-0 bg-transparent">
+                    <h5 class="mb-0">Recent Activity</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div id="activity-feed" class="list-group list-group-flush">
+                        <div class="list-group-item border-0 text-center py-4">
+                            <div class="spinner-border spinner-border-sm text-muted" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <small class="text-muted d-block mt-2">Loading activities...</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Task Modal -->
+{% if can_manage %}
+<div class="modal fade" id="createTaskModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create New Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="{{ url_for('tasks.create_task', project_id=project.id) }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Task Title</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="due_date" class="form-label">Due Date</label>
+                        <input type="date" class="form-control" id="due_date" name="due_date">
+                    </div>
+                    <div class="mb-3">
+                        <label for="assignee_email" class="form-label">Assign to (Email)</label>
+                        <input type="email" class="form-control" id="assignee_email" name="assignee_email" placeholder="Leave empty to unassign">
+                    </div>
+                    <div class="mb-3">
+                        <label for="priority" class="form-label">Priority</label>
+                        <select class="form-select" id="priority" name="priority">
+                            <option value="Low">Low</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="High">High</option>
+                            <option value="Urgent">Urgent</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Member Modal -->
+<div class="modal fade" id="addMemberModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Team Member</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="{{ url_for('projects.add_project_member', project_id=project.id) }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Member Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Role</label>
+                        <select class="form-select" id="role" name="role">
+                            <option value="Member">Member</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Member</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    loadActivityFeed();
+
+    function loadActivityFeed() {
+        fetch(`/api/projects/{{ project.id }}/activities`)
+            .then(response => response.json())
+            .then(activities => {
+                const feed = document.getElementById('activity-feed');
+                if (activities.length === 0) {
+                    feed.innerHTML = '<div class="list-group-item border-0 text-center py-4"><small class="text-muted">No recent activity</small></div>';
+                    return;
+                }
+
+                feed.innerHTML = activities.map(activity => `
+                    <div class="list-group-item border-0 py-2 px-3">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0 me-2">
+                                <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                    <i class="fas fa-user text-white" style="font-size: 12px;"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <small class="text-muted">
+                                    <strong>${activity.user}</strong> ${activity.description}
+                                    ${activity.task_title ? ` on <em>${activity.task_title}</em>` : ''}
+                                </small>
+                                <div class="mt-1">
+                                    <small class="text-muted">${new Date(activity.created_at).toLocaleDateString()}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            })
+            .catch(error => {
+                console.error('Error loading activity feed:', error);
+                document.getElementById('activity-feed').innerHTML = '<div class="list-group-item border-0 text-center py-4"><small class="text-muted">Failed to load activities</small></div>';
+            });
+    }
+});
+</script>
+{% endblock %}

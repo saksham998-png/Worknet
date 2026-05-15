@@ -1,0 +1,141 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-1">Dashboard</h1>
+            <p class="text-muted mb-0">Welcome back, {{ current_user.username }}</p>
+        </div>
+        <div class="text-end">
+            <small class="text-muted">{{ now.strftime('%B %d, %Y') }}</small>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="dashboard-card h-100">
+                <h5>Total Tasks</h5>
+                <p>{{ total_tasks }}</p>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="dashboard-card h-100">
+                <h5>Completed</h5>
+                <p class="text-success">{{ completed_tasks }}</p>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="dashboard-card h-100">
+                <h5>Pending</h5>
+                <p>{{ pending_tasks }}</p>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="dashboard-card h-100">
+                <h5>Overdue</h5>
+                <p class="text-danger">{{ overdue_tasks }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Recent Tasks -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header border-0 bg-transparent">
+                    <h5 class="mb-0">Recent Tasks</h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if recent_tasks %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="border-0 fw-normal">Task</th>
+                                    <th class="border-0 fw-normal">Project</th>
+                                    <th class="border-0 fw-normal">Status</th>
+                                    <th class="border-0 fw-normal">Due Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for task in recent_tasks %}
+                                <tr>
+                                    <td class="fw-medium">{{ task.title }}</td>
+                                    <td>{{ task.project.name }}</td>
+                                    <td>
+                                        <span class="badge-status {{ task.status|lower|replace(' ', '-') }}">{{ task.status }}</span>
+                                        {% if task.is_overdue %}
+                                        <span class="badge-status overdue ms-2">Overdue</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ task.due_date or 'No due date' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="p-4 text-center text-muted">
+                        <p class="mb-0">No recent tasks. Create a new project to get started.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Create Project -->
+            <div class="card mb-4">
+                <div class="card-header border-0 bg-transparent">
+                    <h5 class="mb-0">Create Project</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ url_for('projects.create_project') }}">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Project Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" placeholder="Optional description"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Create Project</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Your Projects -->
+            <div class="card">
+                <div class="card-header border-0 bg-transparent">
+                    <h5 class="mb-0">Your Projects</h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if projects %}
+                    <div class="list-group list-group-flush">
+                        {% for project in projects %}
+                        <a href="{{ url_for('projects.project_detail', project_id=project.id) }}" class="list-group-item list-group-item-action border-0">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="fw-medium">{{ project.name }}</div>
+                                    <small class="text-muted">{{ project.description or 'No description' }}</small>
+                                </div>
+                                <small class="text-muted">{{ project.tasks|length }} tasks</small>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="p-4 text-center text-muted">
+                        <p class="mb-0">No projects yet. Create your first project above.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
