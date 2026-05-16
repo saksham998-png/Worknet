@@ -7,11 +7,15 @@
     <div>
         <span class="eyebrow">Workspace overview</span>
         <h1>Dashboard</h1>
-        <p class="page-subtitle">A cleaner snapshot of your open work, team momentum, and the projects that need your attention.</p>
+        <p class="page-subtitle">Project health, priorities, and team momentum—built for delivery teams, not generic todo lists.</p>
     </div>
-    <div class="page-meta">
-        <div>Welcome back, {{ current_user.username }}</div>
-        <div>{{ now.strftime('%B %d, %Y') }}</div>
+    <div class="page-meta d-flex align-items-center gap-3 flex-wrap">
+        <div class="health-ring" style="--pct: {{ completion_rate }}"><span>{{ completion_rate }}%</span></div>
+        <div>
+            <div>Welcome back, {{ current_user.username }}</div>
+            <div>{{ now.strftime('%B %d, %Y') }}</div>
+            {% if unread_notifications %}<span class="badge bg-warning text-dark">{{ unread_notifications }} new</span>{% endif %}
+        </div>
     </div>
 </section>
 
@@ -135,6 +139,37 @@
                 {% endif %}
             </div>
         </article>
+
+        {% if high_priority %}
+        <article class="section-card">
+            <div class="section-card-header"><h2>High priority</h2></div>
+            <div class="card-body priority-list">
+                {% for task in high_priority %}
+                <div class="priority-item">
+                    <span><strong>{{ task.title }}</strong> — {{ task.project.name }}</span>
+                    <span class="badge" style="background:{{ task.priority_color }};color:#fff">{{ task.priority }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </article>
+        {% endif %}
+
+        {% if workspace_activities %}
+        <article class="section-card">
+            <div class="section-card-header">
+                <h2>Team activity</h2>
+                <a href="{{ url_for('activity.feed') }}" class="btn btn-sm btn-outline-primary">View all</a>
+            </div>
+            <div class="card-body p-0">
+                {% for a in workspace_activities %}
+                <div class="activity-item">
+                    <div class="activity-mark"><i class="fa-solid fa-bolt"></i></div>
+                    <div class="activity-copy"><strong>{{ a.user.username }}</strong> {{ a.description }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </article>
+        {% endif %}
 
         <article class="section-card" id="recent-tasks">
             <div class="section-card-header">

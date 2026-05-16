@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+{% block title %}WorkNet | Reports{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <h1>Reports & insights</h1>
+    <p class="page-subtitle">Project progress, completion metrics, and exports.</p>
+    <div class="d-flex gap-2 flex-wrap mt-3">
+        <a class="btn btn-outline-primary btn-sm" href="{{ url_for('reports.export_csv') }}">Export tasks CSV</a>
+        <a class="btn btn-outline-primary btn-sm" href="{{ url_for('reports.export_csv', scope='projects') }}">Export projects CSV</a>
+        <a class="btn btn-primary btn-sm" href="{{ url_for('reports.export_pdf') }}">Export PDF</a>
+    </div>
+</section>
+
+<div class="stats-grid mb-4">
+    <article class="stat-card brand"><div class="stat-label">Total tasks</div><div class="stat-value">{{ total_tasks }}</div></article>
+    <article class="stat-card success"><div class="stat-label">Completed</div><div class="stat-value">{{ completed }}</div></article>
+</div>
+
+<div class="report-charts">
+    <article class="section-card"><div class="card-body"><canvas id="statusChart" height="200"></canvas></div></article>
+    <article class="section-card"><div class="card-body"><canvas id="priorityChart" height="200"></canvas></div></article>
+    <article class="section-card" style="grid-column:1/-1"><div class="card-body"><canvas id="healthChart" height="220"></canvas></div></article>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    initReportCharts({{ status_counts|tojson }}, {{ priority_counts|tojson }}, {{ project_health|tojson }});
+});
+</script>
+{% endblock %}

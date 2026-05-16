@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+{% block title %}WorkNet | Help{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <h1>Help & quick start</h1>
+    <p class="page-subtitle">Get productive with WorkNet in minutes.</p>
+</section>
+
+<article class="section-card mb-4">
+    <div class="card-body">
+        <h2>Quick start guide</h2>
+        <ul class="help-toc mt-3">
+            <li><a href="#setup">1. Complete onboarding</a> — name your workspace and invite teammates.</li>
+            <li><a href="#projects">2. Create a project</a> — from the dashboard, add tasks and assign owners.</li>
+            <li><a href="#views">3. Use Kanban or calendar</a> — drag cards to reprioritize; due dates show on the calendar.</li>
+            <li><a href="#collab">4. Collaborate</a> — comment with @username to mention teammates; watch the activity feed.</li>
+            <li><a href="#reports">5. Report progress</a> — charts and CSV/PDF exports for stakeholders.</li>
+        </ul>
+        {% if current_user.is_authenticated %}
+        <form method="post" action="{{ url_for('help.load_demo') }}" class="mt-4">
+            <button type="submit" class="btn btn-outline-primary">Load demo data</button>
+        </form>
+        {% endif %}
+    </div>
+</article>
+
+<article class="section-card" id="collab">
+    <div class="card-body">
+        <h2>Why WorkNet vs generic task apps</h2>
+        <p>WorkNet is workspace-scoped: project health, audit logs, invite links, and integrations are built in—not bolted on. Use saved views and real-time updates so teams stay aligned without switching tools.</p>
+    </div>
+</article>
+{% endblock %}

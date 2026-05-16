@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+{% block title %}WorkNet | Workspace{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <h1>{{ workspace.name }}</h1>
+    <p class="page-subtitle">Manage workspace members, invite links, and team roles.</p>
+</section>
+
+<article class="section-card mb-4">
+    <div class="section-card-header"><h2>Invite links</h2></div>
+    <div class="card-body">
+        {% if can_manage %}
+        <form method="post" action="{{ url_for('workspace.create_invite_link') }}" class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Role</label>
+                <select name="role" class="form-select"><option>Member</option><option>Admin</option></select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Expires in (days)</label>
+                <input type="number" name="days" class="form-control" value="7" min="1" max="30">
+            </div>
+            <div class="col-md-4"><button class="btn btn-primary w-100">Create invite link</button></div>
+        </form>
+        {% else %}
+        <p class="text-muted">Only workspace admins can create invite links. Ask your workspace owner for access.</p>
+        {% endif %}
+        {% if invites %}
+        <ul class="list-group list-group-flush mt-3">
+            {% for inv in invites %}
+            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <span>{{ inv.role }} — {% if inv.is_valid %}Active{% else %}Used / expired{% endif %}</span>
+                {% if inv.is_valid %}
+                <code class="small">{{ url_for('workspace.join_workspace', token=inv.token, _external=True) }}</code>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</article>
+
+<article class="section-card">
+    <div class="section-card-header"><h2>Members</h2></div>
+    <div class="card-body p-0">
+        {% for m in members %}
+        <div class="member-card">
+            <div><strong>{{ m.user.username }}</strong><div class="member-email">{{ m.user.email }}</div></div>
+            <span class="badge-status">{{ m.role }}</span>
+        </div>
+        {% endfor %}
+    </div>
+</article>
+{% endblock %}

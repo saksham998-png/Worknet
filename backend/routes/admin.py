@@ -1,12 +1,14 @@
 from flask import Blueprint, render_template, abort, redirect, url_for, request, flash
 from flask_login import login_required, current_user
-from models import db, User, Project, Activity
+from models import db, User, Project, Activity, AuditLog
 
 admin_bp = Blueprint('admin', __name__)
+
 
 def _require_admin():
     if current_user.role != 'Admin':
         abort(403)
+
 
 @admin_bp.route('/admin')
 @login_required
@@ -16,13 +18,19 @@ def dashboard():
     users = User.query.order_by(User.created_at.desc()).all()
     projects = Project.query.order_by(Project.created_at.desc()).all()
     recent_activities = Activity.query.order_by(Activity.created_at.desc()).limit(20).all()
+    audit_logs = AuditLog.query
+    if current_user.workspace_id:
+        audit_logs = audit_logs.filter_by(workspace_id=current_user.workspace_id)
+    audit_logs = audit_logs.order_by(AuditLog.created_at.desc()).limit(50).all()
 
     return render_template(
         'admin/dashboard.html',
         users=users,
         projects=projects,
         recent_activities=recent_activities,
+        audit_logs=audit_logs,
     )
+
 
 @admin_bp.route('/admin/users/<int:user_id>/role', methods=['POST'])
 @login_required
@@ -43,6 +51,7 @@ def update_user_role(user_id):
     db.session.commit()
     flash(f"{user.username}'s role has been updated to {role}.", 'success')
     return redirect(url_for('admin.dashboard'))
+
 
 @admin_bp.route('/admin/projects/<int:project_id>/status', methods=['POST'])
 @login_required

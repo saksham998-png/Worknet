@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+{% block title %}WorkNet | {{ project.name }} Calendar{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <h1>{{ project.name }} — Calendar</h1>
+    <nav class="project-view-tabs">
+        <a href="{{ url_for('projects.project_detail', project_id=project.id) }}">List</a>
+        <a href="{{ url_for('views.kanban', project_id=project.id) }}">Kanban</a>
+        <a href="{{ url_for('views.calendar_view', project_id=project.id) }}" class="active">Calendar</a>
+    </nav>
+</section>
+<article class="section-card">
+    <div class="card-body">
+        <div class="calendar-grid">
+            {% for day in range(1, 29) %}
+            <div class="calendar-day {% if tasks %}has-tasks{% endif %}">
+                <strong>{{ day }}</strong>
+                {% for task in tasks if task.due_date and task.due_date.day == day %}
+                <a href="{{ url_for('projects.project_detail', project_id=project.id) }}" class="calendar-task">{{ task.title }}</a>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        <p class="text-muted mt-3 small">Showing tasks with due dates this month.</p>
+    </div>
+</article>
+{% endblock %}

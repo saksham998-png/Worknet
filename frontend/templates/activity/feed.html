@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+{% block title %}WorkNet | Activity{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <h1>Team activity feed</h1>
+    <p class="page-subtitle">Audit log of workspace actions and your @mentions.</p>
+</section>
+
+<div class="dashboard-layout">
+    <article class="section-card">
+        <div class="section-card-header"><h2>Recent activity</h2></div>
+        <div class="card-body p-0">
+            {% for a in activities %}
+            <div class="activity-item">
+                <div class="activity-mark"><i class="fa-solid fa-bolt"></i></div>
+                <div class="activity-copy">
+                    <strong>{{ a.user.username }}</strong> {{ a.description }}
+                    <span class="activity-date">{{ a.created_at.strftime('%b %d, %Y %H:%M') }}</span>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state p-4"><p>No activity yet.</p></div>
+            {% endfor %}
+        </div>
+    </article>
+
+    <article class="section-card">
+        <div class="section-card-header"><h2>@Mentions</h2></div>
+        <div class="card-body p-0">
+            {% for m in mentions %}
+            <div class="activity-item">
+                <div class="activity-copy">
+                    <strong>{{ m.comment.author.username }}</strong> mentioned you
+                    <p class="small">{{ m.comment.content[:120] }}</p>
+                </div>
+            </div>
+            {% else %}
+            <div class="empty-state p-4"><p>No mentions yet.</p></div>
+            {% endfor %}
+        </div>
+    </article>
+</div>
+{% endblock %}

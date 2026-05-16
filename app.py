@@ -10,6 +10,7 @@ spec = importlib.util.spec_from_file_location('backend_app', os.path.join(backen
 backend_app = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(backend_app)
 app = backend_app.app
+socketio = app.socketio
 
 
 def _is_debug_enabled():
@@ -17,9 +18,12 @@ def _is_debug_enabled():
 
 
 if __name__ == '__main__':
-    app.run(
-        debug=_is_debug_enabled(),
-        use_reloader=_is_debug_enabled(),
+    debug = _is_debug_enabled()
+    socketio.run(
+        app,
+        debug=debug,
+        use_reloader=debug,
         host='0.0.0.0',
         port=int(os.environ.get('PORT', 5000)),
+        allow_unsafe_werkzeug=True,
     )

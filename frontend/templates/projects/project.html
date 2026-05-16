@@ -1,9 +1,10 @@
 {% extends 'layout.html' %}
 
 {% block title %}WorkNet | {{ project.name }}{% endblock %}
+{% block body_class %}project-page{% endblock %}
 
 {% block content %}
-<section class="project-hero">
+<section class="project-hero" data-project-id="{{ project.id }}">
     <div class="project-hero-grid">
         <div>
             <span class="eyebrow">Project workspace</span>
@@ -52,6 +53,12 @@
     </div>
 </section>
 
+<nav class="project-view-tabs">
+    <a href="{{ url_for('projects.project_detail', project_id=project.id) }}" class="active">List</a>
+    <a href="{{ url_for('views.kanban', project_id=project.id) }}">Kanban</a>
+    <a href="{{ url_for('views.calendar_view', project_id=project.id) }}">Calendar</a>
+</nav>
+
 <section class="project-layout">
     <div class="section-stack">
         <article class="section-card">
@@ -83,6 +90,18 @@
                             <option value="overdue">Overdue</option>
                         </select>
                     </div>
+                    <form method="post" action="{{ url_for('views.save_filter_view', project_id=project.id) }}" class="d-flex gap-2 flex-wrap mt-2">
+                        <input type="text" name="name" class="form-control form-control-sm" placeholder="Save view as..." required>
+                        <input type="hidden" name="status" value="all">
+                        <button type="submit" class="btn btn-sm btn-outline-primary">Save view</button>
+                    </form>
+                    {% if saved_views %}
+                    <div class="d-flex gap-2 flex-wrap mt-2">
+                        {% for v in saved_views %}
+                        <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('views.apply_saved_view', project_id=project.id, view_id=v.id) }}">{{ v.name }}</a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="table-responsive">
                     <table class="table mb-0">
@@ -227,7 +246,8 @@
 
                                                     <form method="post" action="{{ url_for('comments.add_comment', task_id=task.id) }}" class="task-inline-form mt-3">
                                                         <label class="form-label" for="comment-{{ task.id }}">Add comment</label>
-                                                        <textarea class="form-control task-inline-textarea" id="comment-{{ task.id }}" name="content" placeholder="Share an update or leave context"></textarea>
+                                                        <textarea class="form-control task-inline-textarea" id="comment-{{ task.id }}" name="content" placeholder="Share an update — use @username to mention"></textarea>
+                                                        <p class="mention-hint mt-1">Tip: @mention teammates to notify them.</p>
                                                         <button type="submit" class="btn btn-primary btn-sm mt-3">Post Comment</button>
                                                     </form>
                                                 </section>
@@ -450,6 +470,7 @@
 {% endblock %}
 
 {% block scripts %}
+<script>document.body.dataset.projectId='{{ project.id }}';</script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     loadActivityFeed();

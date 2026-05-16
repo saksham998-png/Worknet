@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 from flask import Flask, render_template, send_from_directory
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 from models import db, User
 from config import Config
 
@@ -11,16 +11,16 @@ def _is_debug_enabled():
 
 
 def create_app():
-    # Get the project root directory (parent of backend folder)
     project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-    app = Flask(__name__,
-                instance_relative_config=True,
-                template_folder=os.path.join(project_root, 'frontend', 'templates'),
-                static_folder=os.path.join(project_root, 'frontend', 'static'))
+    app = Flask(
+        __name__,
+        instance_relative_config=True,
+        template_folder=os.path.join(project_root, 'frontend', 'templates'),
+        static_folder=os.path.join(project_root, 'frontend', 'static'),
+    )
     app.config.from_object(Config)
 
-    # Initialize extensions
     db.init_app(app)
     Config.init_app(app)
 
@@ -33,7 +33,6 @@ def create_app():
     def load_user(user_id):
         return User.query.get(int(user_id))
 
-    # Register blueprints
     from routes.auth import auth_bp
     from routes.main import main_bp
     from routes.projects import projects_bp
@@ -42,17 +41,25 @@ def create_app():
     from routes.attachments import attachments_bp
     from routes.api import api_bp
     from routes.admin import admin_bp
+    from routes.onboarding import onboarding_bp
+    from routes.settings import settings_bp
+    from routes.workspace import workspace_bp
+    from routes.views import views_bp
+    from routes.reports import reports_bp
+    from routes.help import help_bp
+    from routes.integrations import integrations_bp
+    from routes.activity import activity_bp
 
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(main_bp)
-    app.register_blueprint(projects_bp)
-    app.register_blueprint(tasks_bp)
-    app.register_blueprint(comments_bp)
-    app.register_blueprint(attachments_bp)
-    app.register_blueprint(api_bp)
-    app.register_blueprint(admin_bp)
+    for bp in (
+        auth_bp, main_bp, projects_bp, tasks_bp, comments_bp, attachments_bp,
+        api_bp, admin_bp, onboarding_bp, settings_bp, workspace_bp, views_bp,
+        reports_bp, help_bp, integrations_bp, activity_bp,
+    ):
+        app.register_blueprint(bp)
 
-    # Compatibility aliases for legacy endpoint references
+    from utils.socketio_events import init_socketio
+    app.socketio = init_socketio(app)
+
     app.add_url_rule('/', endpoint='home', view_func=app.view_functions['main.home'])
     app.add_url_rule('/dashboard', endpoint='dashboard', view_func=app.view_functions['main.dashboard'])
     app.add_url_rule('/signup', endpoint='signup', view_func=app.view_functions['auth.signup'])
@@ -71,14 +78,17 @@ def create_app():
     app.add_url_rule('/attachments/<int:attachment_id>/delete', endpoint='delete_attachment', view_func=app.view_functions['attachments.delete_attachment'])
 
     @app.context_processor
-    def inject_now():
-        return {'now': datetime.utcnow()}
+    def inject_globals():
+        dark = False
+        if hasattr(current_user, 'is_authenticated') and current_user.is_authenticated:
+            dark = current_user.dark_mode
+        return {'now': datetime.utcnow(), 'dark_mode': dark}
 
-    # Create database tables
     with app.app_context():
         db.create_all()
+        from utils.db_migrate import run_migrations
+        run_migrations(db)
 
-    # Error handlers
     @app.errorhandler(403)
     def forbidden(error):
         return render_template('errors/403.html'), 403
@@ -93,18 +103,24 @@ def create_app():
 
     @app.route('/favicon.ico')
     def favicon():
-        # Serve the real favicon.svg for browser requests to /favicon.ico
-        return send_from_directory(os.path.join(project_root, 'frontend', 'static'), 'favicon.svg', mimetype='image/svg+xml')
+        return send_from_directory(
+            os.path.join(project_root, 'frontend', 'static'),
+            'favicon.svg',
+            mimetype='image/svg+xml',
+        )
 
     return app
+
 
 app = create_app()
 
 if __name__ == '__main__':
     debug = _is_debug_enabled()
-    app.run(
+    app.socketio.run(
+        app,
         debug=debug,
         use_reloader=debug,
         host='0.0.0.0',
         port=int(os.environ.get('PORT', 5000)),
+        allow_unsafe_werkzeug=True,
     )

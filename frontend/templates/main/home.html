@@ -1,23 +1,55 @@
 {% extends 'layout.html' %}
 
 {% block title %}WorkNet | Team Workspace{% endblock %}
-{% block body_class %}home-page{% endblock %}
+{% block body_class %}home-page landing-page{% endblock %}
 
 {% block content %}
-<section class="hero-panel hero-panel--primary hero-panel--simple">
+<section class="hero-panel hero-panel--primary landing-hero">
     <div class="hero-copy">
-        <span class="eyebrow">Focused team operations</span>
-        <h1>Manage projects, tasks, and progress from a single workspace.</h1>
-        <p>WorkNet centralizes planning, execution, and reporting so teams stay aligned and productive.</p>
+        <span class="eyebrow">Built for teams, not todo lists</span>
+        <h1>Project health, priorities, and collaboration in one calm workspace.</h1>
+        <p>WorkNet gives your team shared context—Kanban boards, activity feeds, @mentions, and reports—without the clutter of generic task apps.</p>
     </div>
-
     <div class="hero-actions">
-        <a class="btn btn-primary btn-lg" href="{{ url_for('auth.signup') }}">Create Workspace</a>
-        <a class="btn btn-outline-primary btn-lg" href="{{ url_for('auth.login') }}">Sign In</a>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('auth.signup') }}">Start free workspace</a>
+        <a class="btn btn-outline-primary btn-lg" href="{{ url_for('help.index') }}">See how it works</a>
     </div>
+</section>
 
-    <div class="hero-note text-muted mt-4">
-        Trusted by teams that need a clean, consistent workspace without extra noise.
+<section class="comparison-section section-card">
+    <div class="section-card-header">
+        <div class="section-title-row">
+            <h2>Why teams choose WorkNet</h2>
+            <p class="text-muted">Purpose-built for project delivery—not another personal checklist.</p>
+        </div>
     </div>
+    <div class="feature-grid landing-grid">
+        <article class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+            <h3>Project health at a glance</h3>
+            <p>Completion rates, overdue work, and priority queues on a dashboard your leads actually open.</p>
+        </article>
+        <article class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-users-rays"></i></div>
+            <h3>Workspace-first collaboration</h3>
+            <p>Multi-tenant workspaces, invite links, roles, and an audit trail admins can trust.</p>
+        </article>
+        <article class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-bolt"></i></div>
+            <h3>Real-time awareness</h3>
+            <p>Live task updates, @mentions, and Slack or Teams notifications keep everyone aligned.</p>
+        </article>
+        <article class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+            <h3>Reports that export</h3>
+            <p>Progress charts plus CSV and PDF exports for stakeholders who live outside the app.</p>
+        </article>
+    </div>
+</section>
+
+<section class="cta-band">
+    <h2>Onboard your team in minutes</h2>
+    <p>Guided setup, optional demo data, and a help center—so day one feels polished.</p>
+    <a class="btn btn-primary btn-lg" href="{{ url_for('auth.signup') }}">Create your workspace</a>
 </section>
 {% endblock %}

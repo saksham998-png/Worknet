@@ -124,5 +124,33 @@
             {% endif %}
         </div>
     </article>
+
+    <article class="section-card">
+        <div class="section-card-header">
+            <div class="section-title-row">
+                <h2>Audit trail</h2>
+                <p class="text-muted">Admin activity log for compliance and security review.</p>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if audit_logs %}
+            <table class="table mb-0">
+                <thead><tr><th>When</th><th>User</th><th>Action</th><th>Details</th></tr></thead>
+                <tbody>
+                    {% for log in audit_logs %}
+                    <tr>
+                        <td>{{ log.created_at.strftime('%b %d %H:%M') }}</td>
+                        <td>{{ log.user.username }}</td>
+                        <td>{{ log.action }}</td>
+                        <td>{{ log.details }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state"><p>No audit entries yet.</p></div>
+            {% endif %}
+        </div>
+    </article>
 </section>
 {% endblock %}

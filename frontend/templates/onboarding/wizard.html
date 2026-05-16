@@ -1,0 +1,66 @@
+{% extends 'layout.html' %}
+{% block title %}WorkNet | Get Started{% endblock %}
+{% block body_class %}onboarding-page{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <span class="eyebrow">Welcome aboard</span>
+    <h1>Set up your team workspace</h1>
+    <p class="page-subtitle">Three quick steps to go from signup to shipping work together.</p>
+</section>
+
+<div class="onboarding-steps">
+    <div class="onboarding-step {% if step == '1' %}is-active{% elif step|int > 1 %}is-done{% endif %}">1. Workspace</div>
+    <div class="onboarding-step {% if step == '2' %}is-active{% elif step|int > 2 %}is-done{% endif %}">2. Team focus</div>
+    <div class="onboarding-step {% if step == '3' %}is-active{% endif %}">3. Launch</div>
+</div>
+
+<article class="section-card">
+    <div class="card-body">
+        {% if step == '1' %}
+        <form method="post">
+            <input type="hidden" name="action" value="next">
+            <div class="mb-3">
+                <label class="form-label">Workspace name</label>
+                <input type="text" class="form-control" name="workspace_name" value="{{ current_user.workspace.name if current_user.workspace else '' }}" placeholder="Acme Product Team" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Continue</button>
+        </form>
+        {% elif step == '2' %}
+        <form method="post">
+            <input type="hidden" name="action" value="next">
+            <div class="mb-3">
+                <label class="form-label">Team size</label>
+                <select class="form-select" name="team_size">
+                    <option value="solo">Just me</option>
+                    <option value="small">2–10 people</option>
+                    <option value="growing">11–50 people</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Primary use case</label>
+                <select class="form-select" name="use_case">
+                    <option value="projects">Project delivery</option>
+                    <option value="client">Client work</option>
+                    <option value="internal">Internal ops</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Continue</button>
+        </form>
+        {% else %}
+        <form method="post">
+            <input type="hidden" name="action" value="next">
+            <p class="mb-3">Load sample projects and tasks so you can explore Kanban, reports, and activity feeds right away.</p>
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" name="load_demo" value="yes" id="loadDemo" checked>
+                <label class="form-check-label" for="loadDemo">Load demo data</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Finish setup</button>
+        </form>
+        {% endif %}
+        <form method="post" class="mt-3">
+            <input type="hidden" name="action" value="skip">
+            <button type="submit" class="btn btn-link">Skip for now</button>
+        </form>
+    </div>
+</article>
+{% endblock %}

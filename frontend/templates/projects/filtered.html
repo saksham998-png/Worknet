@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+{% block title %}WorkNet | {{ view.name }}{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <h1>{{ view.name }}</h1>
+    <p class="page-subtitle">Saved filter view for {{ project.name }}</p>
+</section>
+<article class="section-card">
+    <div class="card-body p-0">
+        <table class="table mb-0">
+            <thead><tr><th>Task</th><th>Status</th><th>Priority</th></tr></thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr><td>{{ task.title }}</td><td>{{ task.status }}</td><td>{{ task.priority }}</td></tr>
+                {% else %}
+                <tr><td colspan="3">No tasks match this view.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</article>
+{% endblock %}

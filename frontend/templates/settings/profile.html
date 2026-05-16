@@ -1,0 +1,63 @@
+{% extends 'layout.html' %}
+{% block title %}WorkNet | Settings{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <h1>Profile & preferences</h1>
+    <p class="page-subtitle">Personalize your account, notifications, and appearance.</p>
+</section>
+<article class="section-card">
+    <form method="post" class="card-body">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Display name</label>
+                <input type="text" class="form-control" name="username" value="{{ current_user.username }}" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Timezone</label>
+                <input type="text" class="form-control" name="timezone" value="{{ current_user.timezone }}">
+            </div>
+            <div class="col-12">
+                <label class="form-label">Bio</label>
+                <textarea class="form-control" name="bio" rows="3">{{ current_user.bio or '' }}</textarea>
+            </div>
+            <div class="col-12">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="email_notifications" id="emailNotif" {% if current_user.email_notifications %}checked{% endif %}>
+                    <label class="form-check-label" for="emailNotif">Email notifications for assignments and mentions</label>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="themeSelect">Theme</label>
+                <select class="form-select" id="themeSelect" name="theme">
+                    <option value="light">Light (Default)</option>
+                    <option value="dark">Dark</option>
+                    <option value="ocean">Ocean</option>
+                    <option value="sunset">Sunset</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-4">Save settings</button>
+    </form>
+</article>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var select = document.getElementById('themeSelect');
+    var currentTheme = localStorage.getItem('worknet_theme') || 'light';
+    select.value = currentTheme;
+
+    select.addEventListener('change', function() {
+        var theme = select.value;
+        localStorage.setItem('worknet_theme', theme);
+        
+        // Remove existing theme classes
+        document.body.classList.remove('theme-dark', 'theme-ocean', 'theme-sunset');
+        
+        if (theme !== 'light') {
+            document.body.classList.add('theme-' + theme);
+        }
+    });
+});
+</script>
+
+{% endblock %}

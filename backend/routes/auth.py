@@ -1,9 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import db, User
+from models import db, User, create_workspace_for_user, ensure_user_workspace
 
 auth_bp = Blueprint('auth', __name__)
+
 
 @auth_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -40,13 +41,16 @@ def signup():
             role=role,
         )
         db.session.add(user)
+        db.session.flush()
+        create_workspace_for_user(user)
         db.session.commit()
 
         login_user(user)
         flash('Welcome! Your account has been created.', 'success')
-        return redirect(url_for('main.dashboard'))
+        return redirect(url_for('onboarding.onboarding'))
 
     return render_template('auth/signup.html')
+
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -63,10 +67,14 @@ def login():
             return render_template('auth/login.html')
 
         login_user(user)
+        ensure_user_workspace(user)
         flash('Signed in successfully.', 'success')
+        if not user.onboarding_completed:
+            return redirect(url_for('onboarding.onboarding'))
         return redirect(url_for('main.dashboard'))
 
     return render_template('auth/login.html')
+
 
 @auth_bp.route('/logout')
 @login_required

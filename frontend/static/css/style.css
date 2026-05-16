@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
 
 :root {
     --bg: #f5f1e8;
@@ -28,6 +28,12 @@
     --radius-md: 12px;
     --radius-lg: 18px;
     --radius-xl: 28px;
+    --font-body: 'Manrope', 'Segoe UI', sans-serif;
+    --font-heading: 'Fraunces', Georgia, serif;
+    --app-bg: radial-gradient(circle at top left, rgba(28, 139, 124, 0.1), transparent 28rem), radial-gradient(circle at bottom right, rgba(240, 138, 93, 0.1), transparent 26rem), linear-gradient(180deg, #fbf7ef 0%, #f3eee5 100%);
+    --nav-bg: linear-gradient(135deg, rgba(20, 48, 67, 0.96), rgba(26, 77, 87, 0.94));
+    --surface-blur: blur(14px);
+    --btn-radius: 999px;
 }
 
 * {
@@ -41,14 +47,11 @@ html {
 body {
     margin: 0;
     min-height: 100vh;
-    font-family: 'Manrope', 'Segoe UI', sans-serif;
+    font-family: var(--font-body);
     font-size: 15px;
     line-height: 1.6;
     color: var(--text);
-    background:
-        radial-gradient(circle at top left, rgba(28, 139, 124, 0.1), transparent 28rem),
-        radial-gradient(circle at bottom right, rgba(240, 138, 93, 0.1), transparent 26rem),
-        linear-gradient(180deg, #fbf7ef 0%, #f3eee5 100%);
+    background: var(--app-bg);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -61,7 +64,7 @@ h5,
 h6 {
     margin: 0;
     color: var(--text);
-    font-family: 'Fraunces', Georgia, serif;
+    font-family: var(--font-heading);
     line-height: 1.12;
     letter-spacing: 0;
 }
@@ -89,7 +92,7 @@ a:hover {
     top: 0;
     z-index: 1030;
     padding: 1rem 0;
-    background: linear-gradient(135deg, rgba(20, 48, 67, 0.96), rgba(26, 77, 87, 0.94));
+    background: var(--nav-bg);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 248, 239, 0.12);
     box-shadow: 0 18px 34px rgba(13, 31, 44, 0.14);
@@ -100,7 +103,7 @@ a:hover {
 }
 
 .navbar-brand {
-    font-family: 'Fraunces', Georgia, serif;
+    font-family: var(--font-heading);
     font-size: 1.7rem;
     color: #fff8ef !important;
 }
@@ -248,7 +251,7 @@ a:hover {
     background: var(--surface);
     border: 1px solid rgba(255, 255, 255, 0.72);
     box-shadow: var(--shadow-sm);
-    backdrop-filter: blur(14px);
+    backdrop-filter: var(--surface-blur);
 }
 
 .sidebar-user {
@@ -577,7 +580,7 @@ a:hover {
 }
 
 .btn {
-    border-radius: 999px;
+    border-radius: var(--btn-radius);
     font-weight: 700;
     padding: 0.8rem 1.35rem;
     border: 1px solid transparent;
@@ -644,7 +647,7 @@ a:hover {
     background: var(--surface);
     border: 1px solid rgba(255, 255, 255, 0.72);
     box-shadow: var(--shadow-sm);
-    backdrop-filter: blur(14px);
+    backdrop-filter: var(--surface-blur);
 }
 
 .card,

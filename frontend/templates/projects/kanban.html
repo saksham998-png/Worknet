@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+{% block title %}WorkNet | {{ project.name }} Kanban{% endblock %}
+{% block body_class %}project-page{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <h1>{{ project.name }} — Kanban</h1>
+    <nav class="project-view-tabs">
+        <a href="{{ url_for('projects.project_detail', project_id=project.id) }}">List</a>
+        <a href="{{ url_for('views.kanban', project_id=project.id) }}" class="active">Kanban</a>
+        <a href="{{ url_for('views.calendar_view', project_id=project.id) }}">Calendar</a>
+    </nav>
+</section>
+
+<div class="kanban-board" data-project-id="{{ project.id }}">
+    {% for status, tasks in tasks_by_status.items() %}
+    <div class="kanban-column">
+        <div class="kanban-column-header"><span>{{ status }}</span><span class="badge bg-secondary">{{ tasks|length }}</span></div>
+        <div data-kanban-column data-status="{{ status }}">
+            {% for task in tasks %}
+            <div class="kanban-card" data-task-id="{{ task.id }}">
+                <strong>{{ task.title }}</strong>
+                <div class="task-subtext">{{ task.assignee.username if task.assignee else 'Unassigned' }}</div>
+                <span class="badge" style="background:{{ task.priority_color }};color:#fff">{{ task.priority }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script>document.body.dataset.projectId='{{ project.id }}';document.addEventListener('DOMContentLoaded',()=>initKanban({{ project.id }}));</script>
+{% endblock %}
