@@ -1,5 +1,5 @@
 from flask import current_app
-from models import db, Notification
+from backend.models import db, Notification
 
 
 def create_notification(user, title, message, link=None):
