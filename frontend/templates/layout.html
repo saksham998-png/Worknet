@@ -139,27 +139,27 @@
                             <i class="fa-solid fa-house"></i>
                             <span>Dashboard</span>
                         </a>
-                        <a href="{% if current_user.is_authenticated and current_user.projects %}{{ url_for('projects.project_detail', project_id=current_user.projects[0].id) }}{% else %}{{ url_for('main.dashboard') }}#recent-tasks{% endif %}" class="sidebar-link">
+                        <a href="{% if current_user.is_authenticated and current_user.projects %}{{ url_for('projects.project_detail', project_id=current_user.projects[0].id) }}{% else %}{{ url_for('main.dashboard') }}#recent-tasks{% endif %}" class="sidebar-link {% if request.endpoint and request.endpoint.startswith('projects.') %}active{% endif %}">
                             <i class="fa-solid fa-folder-open"></i>
                             <span>Projects</span>
                         </a>
-                        <a href="{% if current_user.is_authenticated and current_user.projects %}{{ url_for('projects.project_detail', project_id=current_user.projects[0].id) }}{% else %}{{ url_for('main.dashboard') }}#recent-tasks{% endif %}" class="sidebar-link">
+                        <a href="{% if current_user.is_authenticated and current_user.projects %}{{ url_for('projects.project_detail', project_id=current_user.projects[0].id) }}{% else %}{{ url_for('main.dashboard') }}#recent-tasks{% endif %}" class="sidebar-link {% if request.endpoint and request.endpoint.startswith('views.') %}active{% endif %}">
                             <i class="fa-solid fa-list-check"></i>
                             <span>Team Tasks</span>
                         </a>
-                        <a href="{{ url_for('workspace.settings') }}" class="sidebar-link">
+                        <a href="{{ url_for('workspace.settings') }}" class="sidebar-link {% if request.endpoint == 'workspace.settings' %}active{% endif %}">
                             <i class="fa-solid fa-building"></i>
                             <span>Workspace</span>
                         </a>
-                        <a href="{{ url_for('settings.profile') }}" class="sidebar-link">
+                        <a href="{{ url_for('settings.profile') }}" class="sidebar-link {% if request.endpoint == 'settings.profile' %}active{% endif %}">
                             <i class="fa-solid fa-gear"></i>
                             <span>Settings</span>
                         </a>
-                        <a href="{{ url_for('integrations.settings') }}" class="sidebar-link">
+                        <a href="{{ url_for('integrations.settings') }}" class="sidebar-link {% if request.endpoint == 'integrations.settings' %}active{% endif %}">
                             <i class="fa-solid fa-plug"></i>
                             <span>Integrations</span>
                         </a>
-                        <a href="{{ url_for('activity.feed') }}" class="sidebar-link">
+                        <a href="{{ url_for('activity.feed') }}" class="sidebar-link {% if request.endpoint == 'activity.feed' %}active{% endif %}">
                             <i class="fa-solid fa-clock-rotate-left"></i>
                             <span>Activity Feed</span>
                         </a>
