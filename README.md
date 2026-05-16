@@ -10,7 +10,7 @@
 
 ## ✨ Overview
 
-**Ethara (WorkNet)** is a polished, enterprise-grade workspace designed to help teams organize projects, assign work, and track progress effortlessly. Unlike generic task managers, Ethara focuses on **Visual Excellence** and **Real-Time Responsiveness**, providing a stunning interface that feels alive.
+**WorkNet** is a polished, enterprise-grade workspace designed to help teams organize projects, assign work, and track progress effortlessly. Unlike generic task managers, Ethara focuses on **Visual Excellence** and **Real-Time Responsiveness**, providing a stunning interface that feels alive.
 
 ## 🌟 Key Features
 
@@ -34,7 +34,7 @@
 
 ## 🚀 Deployment on Railway
 
-Ethara is pre-configured for seamless deployment on **Railway**. Follow these steps for a perfect 1-click deployment:
+Worknet is pre-configured for seamless deployment on **Railway**. Follow these steps for a perfect 1-click deployment:
 
 ### 1. Environment Variables
 Ensure you have the following variables set in your Railway dashboard:
@@ -92,6 +92,4 @@ This project is optimized for **Python 3.13**. It uses the `gevent` engine and `
 
 Contributions are welcome! Please feel free to submit a Pull Request or open an issue for any bugs or feature requests.
 
-## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
