@@ -1,1 +1,1 @@
-web: gunicorn --worker-class eventlet -w 1 --timeout 120 backend.app:app
+web: gunicorn --worker-class gthread -w 1 --threads 100 --timeout 120 backend.app:app
