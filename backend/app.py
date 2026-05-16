@@ -1,3 +1,7 @@
+from gevent import monkey
+if not monkey.is_any_patched():
+    monkey.patch_all()
+
 import os
 from datetime import datetime
 from flask import Flask, render_template, send_from_directory
