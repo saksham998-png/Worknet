@@ -1,89 +1,117 @@
 # WorkNet
 
-WorkNet is a polished team workspace built with Flask, designed to help teams organize projects, assign work, and track progress with a clean, professional interface.
+<div align="center">
+  <h3>A calm, clear, and powerful team workspace built with Python and Flask.</h3>
+</div>
 
-## Key Features
+## 🚀 Overview
 
-- Secure authentication with signup and login
-- Role-based access control for admins and members
-- Project creation, team collaboration, and membership management
-- Task creation, assignment, priority, and status tracking
-- Comments and file attachments for task-level collaboration
-- Workspace dashboard with progress summaries and activity insights
-- REST-style API support for integrations and automation
+WorkNet is a polished, production-ready workspace designed to help teams organize projects, assign work, and track progress effortlessly. Built with a focus on modern aesthetics and real-time collaboration, WorkNet provides a clean, professional interface that scales with your team's needs.
 
-## Technology Stack
+## ✨ Key Features
 
-- Python / Flask
-- SQLAlchemy ORM
-- Flask-Login authentication
-- Jinja2 templating
-- Bootstrap 5 and custom UI styles
-- SQLite for local development (configurable for production databases)
+- **Real-Time Collaboration**: Powered by WebSockets, get instant updates on task changes and activity without refreshing the page.
+- **Dynamic Theming System**: Four full-fledged design systems to customize your workspace experience:
+  - ☀️ **Light (Default)**: Clean, calm, and professional typography.
+  - 🌙 **Dark**: Sleek, high-tech, and stealthy interface.
+  - 🌊 **Ocean**: Fluid and friendly with modern Glassmorphism.
+  - 🌅 **Sunset**: Bold and retro with a striking Neo-brutalist aesthetic.
+- **Advanced Task Management**: Create, assign, prioritize, and track tasks. Includes interactive Kanban boards with drag-and-drop functionality.
+- **Project & Team Organization**: Create distinct projects, manage workspaces, and control access with role-based permissions (Admin/Member).
+- **Insights & Reporting**: Visual dashboards using Chart.js to monitor project health, task priority distribution, and completion rates.
+- **Activity & Auditing**: Comprehensive activity feeds and system audit logs for accountability and transparency.
+- **Secure Authentication**: Built-in signup, login, and session management using Flask-Login.
 
-## Repository Structure
+## 🛠️ Technology Stack
+
+**Backend**
+- **Framework**: Python / Flask
+- **Database**: SQLite (Configurable to PostgreSQL/MySQL via SQLAlchemy)
+- **ORM**: Flask-SQLAlchemy
+- **Real-time**: Flask-SocketIO
+- **Security**: Flask-Login, Werkzeug Security
+
+**Frontend**
+- **Structure & Logic**: HTML5, Vanilla JavaScript
+- **Styling**: Vanilla CSS (CSS Variables) & Bootstrap 5
+- **Interactive UI**: SortableJS (Kanban drag-and-drop), Chart.js (Data visualization)
+- **Icons**: FontAwesome
+
+## 📂 Repository Structure
 
 ```text
-worknet/
-├── frontend/               # Frontend templates and static assets
-│   ├── static/             # CSS, JavaScript, favicon and media
-│   └── templates/          # Jinja2 templates by feature
-├── backend/                # Flask application and backend logic
-│   ├── routes/             # Feature-based route modules
-│   ├── models.py           # Database models and relationships
+Worknet/
+├── backend/                # Flask application logic, database models, and API endpoints
+│   ├── routes/             # Modular feature routes (auth, projects, tasks, etc.)
+│   ├── utils/              # Helper functions (sockets, notifications, audit logs)
+│   ├── models.py           # Database schema definition
 │   ├── config.py           # Environment and app configuration
-│   └── app.py              # Flask application factory and bootstrap
-├── app.py                  # Top-level entry point for the repository
-├── README.md               # Project overview and setup guide
+│   └── app.py              # Flask app factory initialization
+├── frontend/               # Frontend presentation layer
+│   ├── static/             # Vanilla CSS, JS, and assets (themes located in features.css)
+│   └── templates/          # Jinja2 HTML templates organized by feature
+├── instance/               # Local SQLite database files (ignored in git)
+├── app.py                  # Top-level entry point to run the server
+├── README.md               # You are here!
 └── .gitignore
 ```
 
-## Getting Started
+## 💻 Getting Started
 
 ### Prerequisites
+- Python 3.8 or higher
+- `pip` package manager
 
-- Python 3.8 or newer
-- `pip`
+### Local Installation
 
-### Local Setup
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/saksham998-png/Worknet.git
+   cd Worknet
+   ```
 
-```bash
-git clone https://github.com/saksham998-png/Worknet.git
-cd Worknet
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r backend/requirements.txt
-python app.py
-```
+2. **Create and activate a virtual environment:**
+   ```bash
+   python -m venv .venv
+   # On Windows:
+   .venv\Scripts\activate
+   # On macOS/Linux:
+   source .venv/bin/activate
+   ```
 
-Then open `http://127.0.0.1:5000` in your browser.
+3. **Install dependencies:**
+   ```bash
+   pip install -r backend/requirements.txt
+   ```
 
-## Development Workflow
+4. **Run the development server:**
+   ```bash
+   python app.py
+   ```
 
-- Frontend structure: `frontend/static/` and `frontend/templates/`
-- Backend structure: `backend/app.py`, `backend/routes/`, `backend/models.py`
-- Flask blueprints are used to keep routes modular and maintainable
-- Static assets are served from `frontend/static`
-- Templates are served from `frontend/templates`
+5. **Open your browser:** Navigate to `http://127.0.0.1:5000` to see WorkNet in action!
 
-## Deployment Notes
+## 🚢 Deployment
 
-WorkNet is ready to deploy on any platform that supports Python and Flask. Recommended steps:
+WorkNet is ready for deployment on any standard Python hosting environment (Heroku, Render, AWS, DigitalOcean). 
 
-1. Configure production database credentials in `backend/config.py`
-2. Set `FLASK_ENV=production` and `FLASK_DEBUG=0`
-3. Use a production WSGI server such as Gunicorn or uWSGI
-4. Ensure static assets are accessible via the configured static folder
+1. Update `backend/config.py` with your production database URI.
+2. Set environment variables `FLASK_ENV=production` and `FLASK_DEBUG=0`.
+3. Use a production WSGI server like `gunicorn`:
+   ```bash
+   gunicorn -w 4 -k gevent app:app
+   ```
+*(Note: Since WorkNet uses WebSockets, ensure your deployment platform supports WebSocket proxying and use an async worker class like `gevent` or `eventlet` with Gunicorn).*
 
-## Contribution
+## 🤝 Contributing
 
-Contributions are welcome. If you want to extend the app or improve the UI:
+Contributions are always welcome! If you have suggestions or want to improve the codebase:
+1. Fork the repository.
+2. Create a new branch for your feature (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4. Push to the branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request.
 
-- Create a new branch for your feature
-- Add tests where possible
-- Keep code modular and consistent with existing structure
-- Open a pull request with a summary of your changes
+## 📄 License
 
-## License
-
-This repository is published under the MIT License.
+This project is licensed under the MIT License. Feel free to use, modify, and distribute it as you see fit.
