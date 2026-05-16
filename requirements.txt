@@ -23,5 +23,7 @@ typing_extensions==4.15.0
 Werkzeug==3.1.8
 wsproto==1.3.2
 gevent
+gevent-websocket
+gunicorn==23.0.0
 psycopg2-binary==2.9.9
 setuptools
