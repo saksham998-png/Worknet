@@ -63,22 +63,8 @@ def create_app():
     from backend.utils.socketio_events import init_socketio
     app.socketio = init_socketio(app)
 
-    app.add_url_rule('/', endpoint='home', view_func=app.view_functions['main.home'])
-    app.add_url_rule('/dashboard', endpoint='dashboard', view_func=app.view_functions['main.dashboard'])
-    app.add_url_rule('/signup', endpoint='signup', view_func=app.view_functions['auth.signup'])
-    app.add_url_rule('/login', endpoint='login', view_func=app.view_functions['auth.login'])
-    app.add_url_rule('/logout', endpoint='logout', view_func=app.view_functions['auth.logout'])
-    app.add_url_rule('/projects/create', endpoint='create_project', view_func=app.view_functions['projects.create_project'])
-    app.add_url_rule('/projects/<int:project_id>', endpoint='project_detail', view_func=app.view_functions['projects.project_detail'])
-    app.add_url_rule('/projects/<int:project_id>/members/add', endpoint='add_project_member', view_func=app.view_functions['projects.add_project_member'])
-    app.add_url_rule('/projects/<int:project_id>/tasks/create', endpoint='create_task', view_func=app.view_functions['tasks.create_task'])
-    app.add_url_rule('/tasks/<int:task_id>/update-status', endpoint='update_task_status', view_func=app.view_functions['tasks.update_task_status'])
-    app.add_url_rule('/tasks/<int:task_id>/update-priority', endpoint='update_task_priority', view_func=app.view_functions['tasks.update_task_priority'])
-    app.add_url_rule('/tasks/<int:task_id>/comments', endpoint='add_comment', view_func=app.view_functions['comments.add_comment'])
-    app.add_url_rule('/comments/<int:comment_id>/delete', endpoint='delete_comment', view_func=app.view_functions['comments.delete_comment'])
-    app.add_url_rule('/tasks/<int:task_id>/attachments', endpoint='upload_attachment', view_func=app.view_functions['attachments.upload_attachment'])
-    app.add_url_rule('/attachments/<int:attachment_id>/download', endpoint='download_attachment', view_func=app.view_functions['attachments.download_attachment'])
-    app.add_url_rule('/attachments/<int:attachment_id>/delete', endpoint='delete_attachment', view_func=app.view_functions['attachments.delete_attachment'])
+    # Routes are registered via Blueprints above
+
 
     @app.context_processor
     def inject_globals():
