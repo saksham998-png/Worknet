@@ -107,9 +107,11 @@ def create_app():
     return app
 
 
-app = create_app()
+# App instance is created by the factory function in Procfile or main block below
+
 
 if __name__ == '__main__':
+    app = create_app()
     debug = _is_debug_enabled()
     app.socketio.run(
         app,
