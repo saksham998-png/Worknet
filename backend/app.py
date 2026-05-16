@@ -35,22 +35,22 @@ def create_app():
     def load_user(user_id):
         return User.query.get(int(user_id))
 
-    from routes.auth import auth_bp
-    from routes.main import main_bp
-    from routes.projects import projects_bp
-    from routes.tasks import tasks_bp
-    from routes.comments import comments_bp
-    from routes.attachments import attachments_bp
-    from routes.api import api_bp
-    from routes.admin import admin_bp
-    from routes.onboarding import onboarding_bp
-    from routes.settings import settings_bp
-    from routes.workspace import workspace_bp
-    from routes.views import views_bp
-    from routes.reports import reports_bp
-    from routes.help import help_bp
-    from routes.integrations import integrations_bp
-    from routes.activity import activity_bp
+    from backend.routes.auth import auth_bp
+    from backend.routes.main import main_bp
+    from backend.routes.projects import projects_bp
+    from backend.routes.tasks import tasks_bp
+    from backend.routes.comments import comments_bp
+    from backend.routes.attachments import attachments_bp
+    from backend.routes.api import api_bp
+    from backend.routes.admin import admin_bp
+    from backend.routes.onboarding import onboarding_bp
+    from backend.routes.settings import settings_bp
+    from backend.routes.workspace import workspace_bp
+    from backend.routes.views import views_bp
+    from backend.routes.reports import reports_bp
+    from backend.routes.help import help_bp
+    from backend.routes.integrations import integrations_bp
+    from backend.routes.activity import activity_bp
 
     for bp in (
         auth_bp, main_bp, projects_bp, tasks_bp, comments_bp, attachments_bp,
