@@ -23,6 +23,7 @@ def create_app():
     print(f"DEBUG: Template folder: {app.template_folder}")
     print(f"DEBUG: Static folder: {app.static_folder}")
 
+    print("DEBUG: Initializing database...")
     db.init_app(app)
     Config.init_app(app)
 
@@ -87,9 +88,15 @@ def create_app():
         return {'now': datetime.utcnow(), 'dark_mode': dark}
 
     with app.app_context():
-        db.create_all()
-        from backend.utils.db_migrate import run_migrations
-        run_migrations(db)
+        try:
+            print("DEBUG: Running database setup and migrations...")
+            db.create_all()
+            from backend.utils.db_migrate import run_migrations
+            run_migrations(db)
+            print("DEBUG: Database setup complete.")
+        except Exception as e:
+            print(f"WARNING: Database setup failed or timed out: {e}")
+            print("The app will attempt to continue starting...")
 
     @app.errorhandler(403)
     def forbidden(error):
