@@ -1,3 +1,7 @@
+from gevent import monkey
+if not monkey.is_anything_patched():
+    monkey.patch_all()
+
 import os
 from datetime import datetime
 from flask import Flask, render_template, send_from_directory
@@ -15,7 +19,7 @@ def create_app():
 
     app = Flask(
         __name__,
-        instance_relative_config=True,
+        instance_relative_config=False,
         template_folder=os.path.join(project_root, 'frontend', 'templates'),
         static_folder=os.path.join(project_root, 'frontend', 'static'),
     )
@@ -66,7 +70,6 @@ def create_app():
 
     # Routes are registered via Blueprints above
 
-
     @app.context_processor
     def inject_globals():
         dark = False
@@ -106,9 +109,6 @@ def create_app():
         )
 
     return app
-
-
-# App instance is created by the factory function in Procfile or main block below
 
 
 if __name__ == '__main__':

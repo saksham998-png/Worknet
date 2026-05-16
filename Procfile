@@ -1,1 +1,1 @@
-web: gunicorn --log-level debug -w 1 --threads 4 --timeout 120 -b 0.0.0.0:$PORT "backend.app:create_app()"
+web: gunicorn --log-level debug --worker-class gevent -w 1 --timeout 120 -b 0.0.0.0:$PORT "backend.app:create_app()"

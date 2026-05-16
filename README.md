@@ -1,117 +1,97 @@
-# WorkNet
+# Ethara - WorkNet 🚀
 
 <div align="center">
-  <h3>A calm, clear, and powerful team workspace built with Python and Flask.</h3>
+  <img src="frontend/static/favicon.svg" width="80" height="80" alt="Ethara Logo">
+  <h3>A Premium, Real-Time Team Workspace for Modern Productivity.</h3>
+  <p>Built with Python, Flask, and High-Performance Async Drivers.</p>
 </div>
 
-## 🚀 Overview
+---
 
-WorkNet is a polished, production-ready workspace designed to help teams organize projects, assign work, and track progress effortlessly. Built with a focus on modern aesthetics and real-time collaboration, WorkNet provides a clean, professional interface that scales with your team's needs.
+## ✨ Overview
 
-## ✨ Key Features
+**Ethara (WorkNet)** is a polished, enterprise-grade workspace designed to help teams organize projects, assign work, and track progress effortlessly. Unlike generic task managers, Ethara focuses on **Visual Excellence** and **Real-Time Responsiveness**, providing a stunning interface that feels alive.
 
-- **Real-Time Collaboration**: Powered by WebSockets, get instant updates on task changes and activity without refreshing the page.
-- **Dynamic Theming System**: Four full-fledged design systems to customize your workspace experience:
-  - ☀️ **Light (Default)**: Clean, calm, and professional typography.
-  - 🌙 **Dark**: Sleek, high-tech, and stealthy interface.
-  - 🌊 **Ocean**: Fluid and friendly with modern Glassmorphism.
-  - 🌅 **Sunset**: Bold and retro with a striking Neo-brutalist aesthetic.
-- **Advanced Task Management**: Create, assign, prioritize, and track tasks. Includes interactive Kanban boards with drag-and-drop functionality.
-- **Project & Team Organization**: Create distinct projects, manage workspaces, and control access with role-based permissions (Admin/Member).
-- **Insights & Reporting**: Visual dashboards using Chart.js to monitor project health, task priority distribution, and completion rates.
-- **Activity & Auditing**: Comprehensive activity feeds and system audit logs for accountability and transparency.
-- **Secure Authentication**: Built-in signup, login, and session management using Flask-Login.
+## 🌟 Key Features
+
+- **Real-Time Collaboration**: Instant task updates and activity feeds powered by WebSockets (SocketIO).
+- **Advanced Task Management**: Interactive Kanban boards with drag-and-drop support (SortableJS).
+- **Intelligent Dashboard**: Data-driven insights with Chart.js showing project health and team productivity.
+- **Dynamic Theming System**:
+  - ☀️ **Light**: Clean, professional typography for focus.
+  - 🌙 **Dark**: Sleek, high-tech interface for reduced eye strain.
+  - 🌊 **Ocean**: Fluid glassmorphism for a modern aesthetic.
+  - 🌅 **Sunset**: Bold, neo-brutalist design for creative teams.
+- **Enterprise Ready**: Role-based access control, secure authentication, and full audit logs.
 
 ## 🛠️ Technology Stack
 
-**Backend**
-- **Framework**: Python / Flask
-- **Database**: SQLite (Configurable to PostgreSQL/MySQL via SQLAlchemy)
-- **ORM**: Flask-SQLAlchemy
-- **Real-time**: Flask-SocketIO
-- **Security**: Flask-Login, Werkzeug Security
+- **Backend**: Python 3.13, Flask, SQLAlchemy
+- **Database**: Supports PostgreSQL, MySQL, and SQLite (Automatic detection)
+- **Real-Time**: Flask-SocketIO with Gevent drivers
+- **Frontend**: Vanilla JavaScript, CSS3 (Modern Variables), HTML5
+- **Deployment**: Optimized for Railway, Heroku, and Docker
 
-**Frontend**
-- **Structure & Logic**: HTML5, Vanilla JavaScript
-- **Styling**: Vanilla CSS (CSS Variables) & Bootstrap 5
-- **Interactive UI**: SortableJS (Kanban drag-and-drop), Chart.js (Data visualization)
-- **Icons**: FontAwesome
+## 🚀 Deployment on Railway
 
-## 📂 Repository Structure
+Ethara is pre-configured for seamless deployment on **Railway**. Follow these steps for a perfect 1-click deployment:
 
-```text
-Worknet/
-├── backend/                # Flask application logic, database models, and API endpoints
-│   ├── routes/             # Modular feature routes (auth, projects, tasks, etc.)
-│   ├── utils/              # Helper functions (sockets, notifications, audit logs)
-│   ├── models.py           # Database schema definition
-│   ├── config.py           # Environment and app configuration
-│   └── app.py              # Flask app factory initialization
-├── frontend/               # Frontend presentation layer
-│   ├── static/             # Vanilla CSS, JS, and assets (themes located in features.css)
-│   └── templates/          # Jinja2 HTML templates organized by feature
-├── instance/               # Local SQLite database files (ignored in git)
-├── app.py                  # Top-level entry point to run the server
-├── README.md               # You are here!
-└── .gitignore
+### 1. Environment Variables
+Ensure you have the following variables set in your Railway dashboard:
+- `FLASK_DEBUG`: `0`
+- `DATABASE_URL`: (Automatically provided by Railway MySQL/Postgres)
+- `SECRET_KEY`: (A random string to secure sessions)
+
+### 2. Startup Command (Procfile)
+Ethara uses the **App Factory Pattern** for maximum stability. The repository includes a `Procfile` that Railway uses automatically. Ensure your "Custom Start Command" in Railway is **empty** to use the default:
+```bash
+web: gunicorn -w 1 --worker-class gevent --timeout 120 -b 0.0.0.0:$PORT "backend.app:create_app()"
 ```
 
-## 💻 Getting Started
+### 3. Compatibility Note
+This project is optimized for **Python 3.13**. It uses the `gevent` engine and `gunicorn 23.0.0` to ensure stability and prevent common "Bad Gateway" errors on high-performance cloud environments.
+
+## 💻 Local Development
 
 ### Prerequisites
-- Python 3.8 or higher
+- Python 3.10+
 - `pip` package manager
 
-### Local Installation
-
-1. **Clone the repository:**
+### Setup Instructions
+1. **Clone & Navigate:**
    ```bash
    git clone https://github.com/saksham998-png/Worknet.git
    cd Worknet
    ```
-
-2. **Create and activate a virtual environment:**
+2. **Virtual Environment:**
    ```bash
    python -m venv .venv
-   # On Windows:
+   # Windows:
    .venv\Scripts\activate
-   # On macOS/Linux:
+   # Mac/Linux:
    source .venv/bin/activate
    ```
-
-3. **Install dependencies:**
+3. **Install Dependencies:**
    ```bash
-   pip install -r backend/requirements.txt
+   pip install -r requirements.txt
    ```
-
-4. **Run the development server:**
+4. **Run Server:**
    ```bash
    python app.py
    ```
+5. **Access:** Open `http://127.0.0.1:5000`
 
-5. **Open your browser:** Navigate to `http://127.0.0.1:5000` to see WorkNet in action!
+## 📂 Project Structure
 
-## 🚢 Deployment
-
-WorkNet is ready for deployment on any standard Python hosting environment (Heroku, Render, AWS, DigitalOcean). 
-
-1. Update `backend/config.py` with your production database URI.
-2. Set environment variables `FLASK_ENV=production` and `FLASK_DEBUG=0`.
-3. Use a production WSGI server like `gunicorn`:
-   ```bash
-   gunicorn -w 4 -k gevent app:app
-   ```
-*(Note: Since WorkNet uses WebSockets, ensure your deployment platform supports WebSocket proxying and use an async worker class like `gevent` or `eventlet` with Gunicorn).*
+- `backend/`: Core logic, routes, and models.
+- `frontend/`: UI layer (static assets and Jinja2 templates).
+- `app.py`: Entry point for local development.
+- `Procfile`: Production configuration for cloud hosting.
 
 ## 🤝 Contributing
 
-Contributions are always welcome! If you have suggestions or want to improve the codebase:
-1. Fork the repository.
-2. Create a new branch for your feature (`git checkout -b feature/AmazingFeature`).
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-4. Push to the branch (`git push origin feature/AmazingFeature`).
-5. Open a Pull Request.
+Contributions are welcome! Please feel free to submit a Pull Request or open an issue for any bugs or feature requests.
 
 ## 📄 License
 
-This project is licensed under the MIT License. Feel free to use, modify, and distribute it as you see fit.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
