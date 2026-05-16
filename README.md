@@ -1,4 +1,4 @@
-# Ethara - WorkNet 🚀
+# WorkNet 🚀
 
 <div align="center">
   <img src="frontend/static/favicon.svg" width="80" height="80" alt="Ethara Logo">
