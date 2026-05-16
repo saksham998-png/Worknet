@@ -2,8 +2,8 @@ import os
 from datetime import datetime
 from flask import Flask, render_template, send_from_directory
 from flask_login import LoginManager, current_user
-from models import db, User
-from config import Config
+from backend.models import db, User
+from backend.config import Config
 
 
 def _is_debug_enabled():
