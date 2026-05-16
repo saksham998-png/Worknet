@@ -1,5 +1,5 @@
 from gevent import monkey
-if not monkey.is_any_patched():
+if not monkey.is_anything_patched():
     monkey.patch_all()
 
 import os
