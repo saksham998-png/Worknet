@@ -59,7 +59,7 @@ def create_app():
     ):
         app.register_blueprint(bp)
 
-    from utils.socketio_events import init_socketio
+    from backend.utils.socketio_events import init_socketio
     app.socketio = init_socketio(app)
 
     app.add_url_rule('/', endpoint='home', view_func=app.view_functions['main.home'])
@@ -88,7 +88,7 @@ def create_app():
 
     with app.app_context():
         db.create_all()
-        from utils.db_migrate import run_migrations
+        from backend.utils.db_migrate import run_migrations
         run_migrations(db)
 
     @app.errorhandler(403)

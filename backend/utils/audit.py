@@ -1,5 +1,5 @@
 from flask import request
-from models import db, AuditLog
+from backend.models import db, AuditLog
 
 
 def log_audit(user, action, details, workspace=None):

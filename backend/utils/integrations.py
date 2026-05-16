@@ -1,7 +1,7 @@
 import json
 import urllib.request
 from flask import current_app
-from models import IntegrationConfig
+from backend.models import IntegrationConfig
 
 
 def _post_webhook(url, payload):

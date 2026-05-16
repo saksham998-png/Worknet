@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for
 from flask_login import current_user, login_required
 from datetime import datetime, timedelta
-from models import Activity, Notification, ensure_user_workspace
+from backend.models import Activity, Notification, ensure_user_workspace
 
 main_bp = Blueprint('main', __name__)
 

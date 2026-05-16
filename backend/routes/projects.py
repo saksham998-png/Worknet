@@ -1,8 +1,8 @@
 from flask import Blueprint, request, redirect, url_for, flash, abort, render_template
 from flask_login import login_required, current_user
 from sqlalchemy.orm import joinedload
-from models import db, Project, Membership, User, Task, Comment, Attachment, SavedView
-from utils.audit import log_audit
+from backend.models import db, Project, Membership, User, Task, Comment, Attachment, SavedView
+from backend.utils.audit import log_audit
 
 projects_bp = Blueprint('projects', __name__)
 

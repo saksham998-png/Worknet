@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, abort, redirect, url_for, request, flash
 from flask_login import login_required, current_user
-from models import db, User, Project, Activity, AuditLog
+from backend.models import db, User, Project, Activity, AuditLog
 
 admin_bp = Blueprint('admin', __name__)
 

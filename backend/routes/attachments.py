@@ -3,8 +3,8 @@ from flask import Blueprint, request, redirect, url_for, flash, abort, send_from
 from flask_login import login_required, current_user
 from datetime import datetime
 from werkzeug.utils import secure_filename
-from models import db, Attachment, Task
-from utils.activity_logger import log_activity
+from backend.models import db, Attachment, Task
+from backend.utils.activity_logger import log_activity
 
 attachments_bp = Blueprint('attachments', __name__)
 

@@ -1,4 +1,4 @@
-from models import db, Activity
+from backend.models import db, Activity
 
 
 def log_activity(user, action, description, project=None, task=None):

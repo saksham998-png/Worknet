@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from models import db, create_workspace_for_user
-from utils.demo_data import seed_demo_for_user
-from utils.audit import log_audit
+from backend.models import db, create_workspace_for_user
+from backend.utils.demo_data import seed_demo_for_user
+from backend.utils.audit import log_audit
 
 onboarding_bp = Blueprint('onboarding', __name__)
 

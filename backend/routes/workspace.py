@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from datetime import datetime
-from models import db, Workspace, WorkspaceMember, WorkspaceInvite, create_invite, ensure_user_workspace
-from utils.audit import log_audit
+from backend.models import db, Workspace, WorkspaceMember, WorkspaceInvite, create_invite, ensure_user_workspace
+from backend.utils.audit import log_audit
 
 workspace_bp = Blueprint('workspace', __name__)
 

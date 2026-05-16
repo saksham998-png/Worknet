@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
 from flask_login import login_required, current_user
-from models import Activity, Mention
+from backend.models import Activity, Mention
 
 activity_bp = Blueprint('activity', __name__)
 

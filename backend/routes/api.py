@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, request, abort
 from flask_login import login_required, current_user
-from models import db, Project, Task, Activity, SavedView, Notification
-from utils.activity_logger import log_activity
-from utils.socketio_events import emit_task_update, emit_activity
+from backend.models import db, Project, Task, Activity, SavedView, Notification
+from backend.utils.activity_logger import log_activity
+from backend.utils.socketio_events import emit_task_update, emit_activity
 
 api_bp = Blueprint('api', __name__)
 

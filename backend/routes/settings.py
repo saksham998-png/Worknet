@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from models import db
-from utils.audit import log_audit
+from backend.models import db
+from backend.utils.audit import log_audit
 
 settings_bp = Blueprint('settings', __name__)
 

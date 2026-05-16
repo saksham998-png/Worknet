@@ -1,11 +1,11 @@
 from flask import Blueprint, request, redirect, url_for, flash, abort
 from flask_login import login_required, current_user
-from models import db, Comment, Task
-from utils.activity_logger import log_activity
-from utils.mentions import process_mentions
-from utils.notifications import notify_user, send_email_notification
-from utils.integrations import broadcast_event
-from utils.socketio_events import emit_activity
+from backend.models import db, Comment, Task
+from backend.utils.activity_logger import log_activity
+from backend.utils.mentions import process_mentions
+from backend.utils.notifications import notify_user, send_email_notification
+from backend.utils.integrations import broadcast_event
+from backend.utils.socketio_events import emit_activity
 
 comments_bp = Blueprint('comments', __name__)
 

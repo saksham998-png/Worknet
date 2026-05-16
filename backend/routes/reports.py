@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, Response, request
 from flask_login import login_required, current_user
-from models import Project, Task
-from utils.export import tasks_to_csv, projects_report_csv, tasks_to_pdf_bytes
+from backend.models import Project, Task
+from backend.utils.export import tasks_to_csv, projects_report_csv, tasks_to_pdf_bytes
 
 reports_bp = Blueprint('reports', __name__)
 

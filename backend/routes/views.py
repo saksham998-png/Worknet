@@ -2,7 +2,7 @@ import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash, abort
 from flask_login import login_required, current_user
 from sqlalchemy.orm import joinedload
-from models import db, Project, Task, SavedView, Comment, Attachment, Membership
+from backend.models import db, Project, Task, SavedView, Comment, Attachment, Membership
 
 views_bp = Blueprint('views', __name__)
 

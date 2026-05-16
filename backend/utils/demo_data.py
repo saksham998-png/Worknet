@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
-from models import (
+from backend.models import (
     db, User, Project, Task, Membership, Comment, Activity,
     create_workspace_for_user,
 )
-from utils.activity_logger import log_activity
+from backend.utils.activity_logger import log_activity
 
 
 def seed_demo_for_user(user):

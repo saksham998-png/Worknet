@@ -2,7 +2,7 @@ from flask_socketio import SocketIO, join_room, leave_room
 from flask_login import current_user
 
 # manage_session=False avoids Flask 3.x session setter errors on connect
-socketio = SocketIO(cors_allowed_origins='*', async_mode='threading', manage_session=False)
+socketio = SocketIO(cors_allowed_origins='*', manage_session=False)
 
 
 def init_socketio(app):

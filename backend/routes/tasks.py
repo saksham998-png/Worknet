@@ -2,10 +2,10 @@ from flask import Blueprint, request, redirect, url_for, flash, abort, jsonify
 from flask_login import login_required, current_user
 from datetime import datetime
 from sqlalchemy import func
-from models import db, Task, Project, User
-from utils.activity_logger import log_activity
-from utils.notifications import notify_user
-from utils.socketio_events import emit_task_update, emit_activity
+from backend.models import db, Task, Project, User
+from backend.utils.activity_logger import log_activity
+from backend.utils.notifications import notify_user
+from backend.utils.socketio_events import emit_task_update, emit_activity
 
 tasks_bp = Blueprint('tasks', __name__)
 

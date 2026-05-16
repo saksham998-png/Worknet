@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, current_user
-from utils.demo_data import seed_demo_for_user
+from backend.utils.demo_data import seed_demo_for_user
 
 help_bp = Blueprint('help', __name__)
 
