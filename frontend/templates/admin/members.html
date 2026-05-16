@@ -1,0 +1,84 @@
+{% extends 'layout.html' %}
+{% block title %}WorkNet | Member Management{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <div>
+        <span class="eyebrow">Administration</span>
+        <h1>Members</h1>
+        <p class="page-subtitle">Manage workspace members, their access levels, and account statuses.</p>
+    </div>
+</section>
+
+<article class="section-card">
+    <div class="section-card-header">
+        <h2>Team Members</h2>
+        <span class="badge bg-primary-soft text-primary">{{ users|length }} Total</span>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">User</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Joined</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr class="{% if not user.is_active %}table-light text-muted{% endif %}">
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="avatar-sm bg-primary-soft text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; font-weight: 700;">
+                                    {{ user.username[0]|upper }}
+                                </div>
+                                <div>
+                                    <div class="fw-bold">{{ user.username }}</div>
+                                    <div class="small text-muted">{{ user.email }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <form action="{{ url_for('admin.update_user_role', user_id=user.id) }}" method="post" class="d-flex gap-2">
+                                <select name="role" class="form-select form-select-sm" style="width: 120px;" onchange="this.form.submit()">
+                                    <option value="Member" {% if user.role == 'Member' %}selected{% endif %}>Member</option>
+                                    <option value="Admin" {% if user.role == 'Admin' %}selected{% endif %}>Admin</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>
+                            {% if user.is_active %}
+                            <span class="badge bg-success-soft text-success">Active</span>
+                            {% else %}
+                            <span class="badge bg-danger-soft text-danger">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td><small>{{ user.created_at.strftime('%b %d, %Y') }}</small></td>
+                        <td class="text-end pe-4">
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fa-solid fa-user-pen me-1"></i> Edit
+                                </a>
+                                {% if user.id != current_user.id %}
+                                <form action="{{ url_for('admin.update_user_status', user_id=user.id) }}" method="post">
+                                    {% if user.is_active %}
+                                    <input type="hidden" name="action" value="deactivate">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Deactivate</button>
+                                    {% else %}
+                                    <input type="hidden" name="action" value="activate">
+                                    <button type="submit" class="btn btn-sm btn-outline-success">Activate</button>
+                                    {% endif %}
+                                </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</article>
+{% endblock %}

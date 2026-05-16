@@ -59,82 +59,69 @@
 
 <section class="dashboard-layout">
     <div class="section-stack">
-        <article class="section-card">
-            <div class="section-card-header">
-                <div class="section-title-row">
-                    <h2>Workspace focus</h2>
-                    <p class="text-muted">A quick read on what needs attention first.</p>
-                </div>
+        <div class="visual-header-group mb-4">
+            <h2 class="mb-1">Workspace focus</h2>
+            <div class="d-flex gap-2">
+                <span class="badge bg-primary-soft text-primary"><i class="fa-solid fa-bolt me-1"></i> Real-time momentum</span>
             </div>
-            <div class="card-body">
-                <div class="feature-grid dashboard-feature-grid">
-                    <div class="feature-card interactive-surface compact-feature-card">
-                        <div class="feature-icon"><i class="fa-solid fa-user-check"></i></div>
-                        <h3>Assigned to you</h3>
-                        <p>{{ assigned_tasks|length }} active task{{ '' if assigned_tasks|length == 1 else 's' }} currently need your attention.</p>
-                        {% if assigned_tasks %}
-                        <div class="mini-list mt-3">
-                            {% for task in assigned_tasks %}
-                            <div class="mini-list-item">
-                                <strong>{{ task.title }}</strong>
-                                <span>{{ task.project.name }}</span>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
+        </div>
+        
+        <div class="feature-grid dashboard-feature-grid mb-5">
+            <div class="feature-card interactive-surface premium-card">
+                <div class="feature-icon-float"><i class="fa-solid fa-user-check"></i></div>
+                <div class="stat-large">{{ assigned_tasks|length }}</div>
+                <h3>Assigned to you</h3>
+                {% if assigned_tasks %}
+                <div class="mini-list mt-3">
+                    {% for task in assigned_tasks[:3] %}
+                    <div class="mini-list-item">
+                        <strong>{{ task.title }}</strong>
                     </div>
-
-                    <div class="feature-card interactive-surface compact-feature-card">
-                        <div class="feature-icon"><i class="fa-solid fa-hourglass-half"></i></div>
-                        <h3>Due soon</h3>
-                        <p>{{ due_soon_tasks|length }} task{{ '' if due_soon_tasks|length == 1 else 's' }} are coming up in the next few days.</p>
-                        {% if due_soon_tasks %}
-                        <div class="mini-list mt-3">
-                            {% for task in due_soon_tasks %}
-                            <div class="mini-list-item">
-                                <strong>{{ task.title }}</strong>
-                                <span>{{ task.due_date.strftime('%b %d') }} in {{ task.project.name }}</span>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </div>
+                    {% endfor %}
                 </div>
+                {% endif %}
             </div>
-        </article>
 
-        <article class="section-card">
-            <div class="section-card-header">
-                <div class="section-title-row">
-                    <h2>Project pulse</h2>
-                    <p class="text-muted">Progress snapshots across your busiest workspaces.</p>
+            <div class="feature-card interactive-surface premium-card accent-card">
+                <div class="feature-icon-float"><i class="fa-solid fa-hourglass-half"></i></div>
+                <div class="stat-large">{{ due_soon_tasks|length }}</div>
+                <h3>Due soon</h3>
+                {% if due_soon_tasks %}
+                <div class="mini-list mt-3">
+                    {% for task in due_soon_tasks[:3] %}
+                    <div class="mini-list-item">
+                        <strong>{{ task.title }}</strong>
+                    </div>
+                    {% endfor %}
                 </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <article class="section-card premium-surface">
+            <div class="section-card-header">
+                <h2>Project pulse</h2>
             </div>
             <div class="card-body">
                 {% if project_snapshots %}
                 <div class="pulse-list">
                     {% for project in project_snapshots %}
-                    <div class="pulse-card interactive-surface">
+                    <div class="pulse-card interactive-surface glasseffect">
                         <div class="pulse-card-top">
                             <div>
-                                <strong>{{ project.name }}</strong>
-                                <div class="text-muted small">{{ project.tasks|length }} tasks • {{ project.members|length }} members</div>
+                                <strong class="fs-5">{{ project.name }}</strong>
+                                <div class="text-muted small">{{ project.tasks|length }} tasks</div>
                             </div>
-                            <a href="{{ url_for('projects.project_detail', project_id=project.id) }}" class="pulse-link">Open</a>
+                            <div class="d-flex flex-column align-items-end gap-1">
+                                <span class="badge {% if project.status in ['Active', 'Open'] %}bg-success-soft text-success{% elif project.status == 'Paused' %}bg-warning-soft text-warning{% else %}bg-secondary-soft text-secondary{% endif %} text-uppercase" style="font-size: 0.65rem; letter-spacing: 0.05em;">{{ 'Active' if project.status == 'Open' else project.status }}</span>
+                                <a href="{{ url_for('projects.project_detail', project_id=project.id) }}" class="pulse-link fw-bold">Enter workspace</a>
+                            </div>
                         </div>
-                        <div class="pulse-progress-meta">
-                            <span>{{ project.task_stats['completion_rate']|round|int }}% complete</span>
-                            <span>{{ project.task_stats['overdue'] }} overdue</span>
-                        </div>
-                        <div class="progress-track mt-2">
-                            <div class="progress-fill" style="width: {{ project.task_stats['completion_rate'] }}%;"></div>
+                        <div class="progress-track mt-3" style="height: 6px;">
+                            <div class="progress-fill" style="width: {{ project.task_stats['completion_rate'] }}%; background: linear-gradient(90deg, var(--brand), var(--accent));"></div>
                         </div>
                     </div>
                     {% endfor %}
-                </div>
-                {% else %}
-                <div class="empty-state">
-                    <p>Create a couple of projects and this view will start surfacing progress trends.</p>
                 </div>
                 {% endif %}
             </div>
@@ -289,7 +276,7 @@
             <div class="section-card-header">
                 <div class="section-title-row">
                     <h3>Your projects</h3>
-                    <p class="text-muted">Open a project and manage tasks in detail.</p>
+                    <p class="text-muted">Select a project to manage tasks and view team progress.</p>
                 </div>
             </div>
 

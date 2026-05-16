@@ -32,6 +32,14 @@ def dashboard():
     )
 
 
+@admin_bp.route('/admin/members')
+@login_required
+def members_list():
+    _require_admin()
+    users = User.query.order_by(User.username).all()
+    return render_template('admin/members.html', users=users)
+
+
 @admin_bp.route('/admin/users/<int:user_id>/role', methods=['POST'])
 @login_required
 def update_user_role(user_id):
@@ -51,6 +59,44 @@ def update_user_role(user_id):
     db.session.commit()
     flash(f"{user.username}'s role has been updated to {role}.", 'success')
     return redirect(url_for('admin.dashboard'))
+
+@admin_bp.route('/admin/users/<int:user_id>/status', methods=['POST'])
+@login_required
+def update_user_status(user_id):
+    _require_admin()
+
+    user = User.query.get_or_404(user_id)
+    if user.id == current_user.id:
+        flash('You cannot deactivate your own account.', 'warning')
+        return redirect(url_for('admin.dashboard'))
+
+    action = request.form.get('action', '')
+    if action == 'deactivate':
+        user.is_active = False
+        flash(f"{user.username} has been deactivated.", 'success')
+    elif action == 'activate':
+        user.is_active = True
+        flash(f"{user.username} has been activated.", 'success')
+
+    db.session.commit()
+    return redirect(url_for('admin.members_list'))
+
+
+@admin_bp.route('/admin/users/<int:user_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_user(user_id):
+    _require_admin()
+    user = User.query.get_or_404(user_id)
+    if request.method == 'POST':
+        user.username = request.form.get('username')
+        user.email = request.form.get('email')
+        user.role = request.form.get('role')
+        user.bio = request.form.get('bio')
+        db.session.commit()
+        flash(f"Profile for {user.username} has been updated.", "success")
+        return redirect(url_for('admin.members_list'))
+    
+    return render_template('admin/edit_user.html', user=user)
 
 
 @admin_bp.route('/admin/projects/<int:project_id>/status', methods=['POST'])

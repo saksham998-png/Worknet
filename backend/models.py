@@ -100,6 +100,7 @@ class User(UserMixin, db.Model):
     dark_mode = db.Column(db.Boolean, default=False, nullable=False)
     email_notifications = db.Column(db.Boolean, default=True, nullable=False)
     timezone = db.Column(db.String(50), default='UTC', nullable=False)
+    is_active = db.Column(db.Boolean, default=True, nullable=False)
 
     workspace = db.relationship('Workspace', foreign_keys=[workspace_id])
     owned_workspaces = db.relationship('Workspace', back_populates='owner', foreign_keys='Workspace.owner_id')

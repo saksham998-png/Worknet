@@ -56,6 +56,32 @@ def project_detail(project_id):
         can_manage=can_manage,
         saved_views=saved_views,
     )
+@projects_bp.route('/projects/<int:project_id>/edit', methods=['POST'])
+@login_required
+def edit_project(project_id):
+    project = Project.query.get_or_404(project_id)
+    if not project.can_manage(current_user):
+        abort(403)
+
+    name = request.form.get('name', '').strip()
+    description = request.form.get('description', '').strip()
+    status = request.form.get('status', 'Active')
+
+    if not name:
+        flash('Project name is required.', 'danger')
+        return redirect(url_for('projects.project_detail', project_id=project.id))
+
+    project.name = name
+    project.description = description
+    
+    if status in ['Active', 'Paused', 'Archived']:
+        project.status = status
+
+    db.session.commit()
+    log_audit(current_user, 'project_edited', f'Edited project {name}', current_user.workspace)
+
+    flash('Project updated successfully.', 'success')
+    return redirect(url_for('projects.project_detail', project_id=project.id))
 
 
 @projects_bp.route('/projects/<int:project_id>/members/add', methods=['POST'])

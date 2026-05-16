@@ -13,6 +13,7 @@ def run_migrations(db):
         'dark_mode': 'BOOLEAN DEFAULT 0',
         'email_notifications': 'BOOLEAN DEFAULT 1',
         'timezone': "VARCHAR(50) DEFAULT 'UTC'",
+        'is_active': 'BOOLEAN DEFAULT 1',
     }
     for col, col_type in user_additions.items():
         if col not in user_columns and inspector.has_table('users'):

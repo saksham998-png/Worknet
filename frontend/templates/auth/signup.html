@@ -45,26 +45,26 @@
             <h2>Join WorkNet</h2>
             <p>Build your account and open the door to a cleaner team workflow.</p>
 
-            <form method="post" action="{{ url_for('auth.signup') }}" class="auth-form">
+            <form method="post" action="{{ url_for('auth.signup') }}" class="auth-form" novalidate>
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="username" class="form-label">Full name</label>
-                        <input type="text" class="form-control" id="username" name="username" placeholder="Your name" required>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Your name">
                     </div>
                     <div class="col-md-6">
                         <label for="email" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
                     </div>
                 </div>
 
                 <div class="row g-3 mt-1">
                     <div class="col-md-6">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Create a password" required>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Create a password">
                     </div>
                     <div class="col-md-6">
                         <label for="confirm_password" class="form-label">Confirm password</label>
-                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Repeat your password" required>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Repeat your password">
                     </div>
                 </div>
 

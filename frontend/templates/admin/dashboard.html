@@ -26,6 +26,7 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Role</th>
+                        <th>Status</th>
                         <th>Joined</th>
                     </tr>
                 </thead>
@@ -46,6 +47,23 @@
                                 <button type="button" class="btn btn-sm btn-secondary" disabled>Current</button>
                                 {% endif %}
                             </form>
+                        </td>
+                        <td>
+                            {% if user.is_active %}
+                            <span class="badge-status active mb-2">Active</span>
+                            {% if user.id != current_user.id %}
+                            <form method="post" action="{{ url_for('admin.update_user_status', user_id=user.id) }}">
+                                <input type="hidden" name="action" value="deactivate">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Deactivate</button>
+                            </form>
+                            {% endif %}
+                            {% else %}
+                            <span class="badge-status archived mb-2">Inactive</span>
+                            <form method="post" action="{{ url_for('admin.update_user_status', user_id=user.id) }}">
+                                <input type="hidden" name="action" value="activate">
+                                <button type="submit" class="btn btn-sm btn-outline-success">Activate</button>
+                            </form>
+                            {% endif %}
                         </td>
                         <td>{{ user.created_at.strftime('%b %d, %Y') }}</td>
                     </tr>

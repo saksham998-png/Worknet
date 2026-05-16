@@ -86,17 +86,53 @@ body.theme-sunset {
     color: var(--text);
 }
 
-body.theme-sunset .section-card,
-body.theme-sunset .stat-card,
-body.theme-sunset .feature-card,
-body.theme-sunset .card,
-body.theme-sunset .form-control,
-body.theme-sunset .form-select,
-body.theme-sunset .btn,
-body.theme-sunset .hero-panel,
-body.theme-sunset .sidebar-panel,
 body.theme-sunset .site-nav {
     border: 2px solid var(--line);
+}
+
+body.theme-cyber {
+    --bg: #000000;
+    --bg-alt: #050505;
+    --surface: #0a0a0a;
+    --surface-strong: #111111;
+    --surface-muted: #151515;
+    --line: #00ff41;
+    --line-strong: #00ff41;
+    --text: #00ff41;
+    --text-soft: #00cc33;
+    --brand: #f0f;
+    --brand-strong: #ff00ff;
+    --brand-soft: rgba(255, 0, 255, 0.1);
+    --accent: #0ff;
+    --accent-soft: rgba(0, 255, 255, 0.1);
+    --shadow-sm: 0 0 10px rgba(0, 255, 65, 0.3);
+    --shadow-md: 0 0 20px rgba(0, 255, 65, 0.5);
+    --shadow-lg: 0 0 30px rgba(0, 255, 65, 0.7);
+    --app-bg: linear-gradient(180deg, #000 0%, #050505 100%);
+    --nav-bg: #000;
+    --font-heading: 'Courier New', monospace;
+    --font-body: 'Courier New', monospace;
+    --radius-sm: 0px;
+    --radius-md: 0px;
+    --radius-lg: 0px;
+    --radius-xl: 0px;
+    --btn-radius: 0px;
+    color: var(--text);
+    text-shadow: 0 0 5px rgba(0, 255, 65, 0.5);
+}
+
+body.theme-cyber .section-card,
+body.theme-cyber .stat-card,
+body.theme-cyber .feature-card,
+body.theme-cyber .card,
+body.theme-cyber .form-control,
+body.theme-cyber .form-select,
+body.theme-cyber .btn,
+body.theme-cyber .hero-panel,
+body.theme-cyber .sidebar-panel,
+body.theme-cyber .site-nav {
+    border: 1px solid var(--line);
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
 }
 
 body.theme-dark .section-card,
@@ -107,7 +143,10 @@ body.theme-ocean .stat-card,
 body.theme-ocean .feature-card,
 body.theme-sunset .section-card,
 body.theme-sunset .stat-card,
-body.theme-sunset .feature-card {
+body.theme-sunset .feature-card,
+body.theme-cyber .section-card,
+body.theme-cyber .stat-card,
+body.theme-cyber .feature-card {
     background: var(--surface);
     border-color: var(--line);
 }
@@ -117,7 +156,9 @@ body.theme-dark .form-select,
 body.theme-ocean .form-control,
 body.theme-ocean .form-select,
 body.theme-sunset .form-control,
-body.theme-sunset .form-select {
+body.theme-sunset .form-select,
+body.theme-cyber .form-control,
+body.theme-cyber .form-select {
     background: var(--surface-muted);
     border-color: var(--line);
     color: var(--text);
@@ -184,23 +225,23 @@ body.theme-sunset .form-select {
 
 .kanban-column {
     background: var(--surface-muted);
-    border-radius: var(--radius-lg);
-    padding: 0.75rem;
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
     border: 1px solid var(--line);
 }
 .kanban-column-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.75rem;
+    margin-bottom: 1.5rem;
     font-weight: 700;
 }
 .kanban-card {
     background: var(--surface-strong);
     border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    padding: 0.75rem;
-    margin-bottom: 0.5rem;
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
     cursor: grab;
     box-shadow: var(--shadow-sm);
 }
@@ -212,10 +253,10 @@ body.theme-sunset .form-select {
     gap: 0.35rem;
 }
 .calendar-day {
-    min-height: 90px;
+    min-height: 120px;
     background: var(--surface-muted);
-    border-radius: var(--radius-sm);
-    padding: 0.35rem;
+    border-radius: var(--radius-md);
+    padding: 0.75rem;
     font-size: 0.8rem;
 }
 .calendar-day.has-tasks { border: 1px solid var(--brand); }

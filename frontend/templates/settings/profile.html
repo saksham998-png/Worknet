@@ -27,13 +27,15 @@
                 </div>
             </div>
             <div class="col-12 col-md-6">
-                <label class="form-label" for="themeSelect">Theme</label>
+                <label class="form-label" for="themeSelect">Theme Preference</label>
                 <select class="form-select" id="themeSelect" name="theme">
                     <option value="light">Light (Default)</option>
-                    <option value="dark">Dark</option>
-                    <option value="ocean">Ocean</option>
-                    <option value="sunset">Sunset</option>
+                    <option value="dark">Dark Mode</option>
+                    <option value="ocean">Ocean Blue</option>
+                    <option value="sunset">Sunset Neon</option>
+                    <option value="cyber">☣️ !!! CYBER ACID !!! ☣️</option>
                 </select>
+                <div class="form-text mt-2">Cyber/Acid is a high-contrast, violent theme for unique experiences.</div>
             </div>
         </div>
         <button type="submit" class="btn btn-primary mt-4">Save settings</button>
@@ -50,8 +52,8 @@ document.addEventListener('DOMContentLoaded', function() {
         var theme = select.value;
         localStorage.setItem('worknet_theme', theme);
         
-        // Remove existing theme classes
-        document.body.classList.remove('theme-dark', 'theme-ocean', 'theme-sunset');
+        // Remove all theme classes before adding new one
+        document.body.classList.remove('theme-dark', 'theme-ocean', 'theme-sunset', 'theme-cyber');
         
         if (theme !== 'light') {
             document.body.classList.add('theme-' + theme);
@@ -59,5 +61,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
 {% endblock %}

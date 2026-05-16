@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+{% block title %}WorkNet | Edit Member{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <div>
+        <span class="eyebrow">Administration</span>
+        <h1>Edit Profile</h1>
+        <p class="page-subtitle">Update account details for {{ user.username }}.</p>
+    </div>
+</section>
+
+<article class="section-card" style="max-width: 800px;">
+    <div class="section-card-header">
+        <h2>Account Settings</h2>
+    </div>
+    <form method="post" class="card-body">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-control" name="username" value="{{ user.username }}" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-control" name="email" value="{{ user.email }}" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Workspace Role</label>
+                <select name="role" class="form-select">
+                    <option value="Member" {% if user.role == 'Member' %}selected{% endif %}>Member</option>
+                    <option value="Admin" {% if user.role == 'Admin' %}selected{% endif %}>Admin</option>
+                </select>
+                <div class="form-text">Admins have full access to workspace settings and user management.</div>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Bio</label>
+                <textarea class="form-control" name="bio" rows="4">{{ user.bio or '' }}</textarea>
+            </div>
+        </div>
+        <div class="d-flex gap-3 mt-5">
+            <button type="submit" class="btn btn-primary px-4">Update Profile</button>
+            <a href="{{ url_for('admin.members_list') }}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</article>
+{% endblock %}

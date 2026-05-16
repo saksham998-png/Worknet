@@ -20,6 +20,8 @@ def create_app():
         static_folder=os.path.join(project_root, 'frontend', 'static'),
     )
     app.config.from_object(Config)
+    print(f"DEBUG: Template folder: {app.template_folder}")
+    print(f"DEBUG: Static folder: {app.static_folder}")
 
     db.init_app(app)
     Config.init_app(app)
